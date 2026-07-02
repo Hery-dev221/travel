@@ -10,6 +10,8 @@ const {
 } = require('../models/reservation.model');
 const { getTrajetById, updatePlacesDisponibles } = require('../models/trajet.model');
 
+const isVercel = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
+
 const reserver = async (req, res) => {
     try {
         const { 
@@ -24,11 +26,15 @@ const reserver = async (req, res) => {
         } = req.body;
         const user_id = req.user.id;
 
-        // Récupérer le nom du fichier uploadé
         let preuve_paiement = null;
         if (req.file) {
-            preuve_paiement = req.file.filename;
-            console.log('Fichier uploadé:', preuve_paiement);
+            if (isVercel) {
+                console.log('Fichier reçu sur Vercel mais non sauvegardé (utilisation memoryStorage)');
+                preuve_paiement = null;
+            } else {
+                preuve_paiement = req.file.filename;
+                console.log('Fichier uploadé:', preuve_paiement);
+            }
         }
 
         const trajet = await getTrajetById(trajet_id);

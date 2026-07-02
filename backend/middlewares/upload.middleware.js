@@ -2,41 +2,51 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-const uploadDir = path.join(__dirname, '../../uploads');
-const preuvesDir = path.join(__dirname, '../../uploads/preuves');
-const vehiculesDir = path.join(__dirname, '../../public/uploads/vehicules');
+const isVercel = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
 
-const ensureDirExists = (dir) => {
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
-    }
-};
+let storagePreuves;
+let storageVehicules;
 
-ensureDirExists(uploadDir);
-ensureDirExists(preuvesDir);
-ensureDirExists(vehiculesDir);
+if (isVercel) {
+    storagePreuves = multer.memoryStorage();
+    storageVehicules = multer.memoryStorage();
+} else {
+    const uploadDir = path.join(__dirname, '../../uploads');
+    const preuvesDir = path.join(__dirname, '../../uploads/preuves');
+    const vehiculesDir = path.join(__dirname, '../../public/uploads/vehicules');
 
-const storagePreuves = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, preuvesDir);
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        const ext = path.extname(file.originalname);
-        cb(null, `preuve-${uniqueSuffix}${ext}`);
-    }
-});
+    const ensureDirExists = (dir) => {
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+        }
+    };
 
-const storageVehicules = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, vehiculesDir);
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        const ext = path.extname(file.originalname);
-        cb(null, `vehicule-${uniqueSuffix}${ext}`);
-    }
-});
+    ensureDirExists(uploadDir);
+    ensureDirExists(preuvesDir);
+    ensureDirExists(vehiculesDir);
+
+    storagePreuves = multer.diskStorage({
+        destination: (req, file, cb) => {
+            cb(null, preuvesDir);
+        },
+        filename: (req, file, cb) => {
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+            const ext = path.extname(file.originalname);
+            cb(null, `preuve-${uniqueSuffix}${ext}`);
+        }
+    });
+
+    storageVehicules = multer.diskStorage({
+        destination: (req, file, cb) => {
+            cb(null, vehiculesDir);
+        },
+        filename: (req, file, cb) => {
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+            const ext = path.extname(file.originalname);
+            cb(null, `vehicule-${uniqueSuffix}${ext}`);
+        }
+    });
+}
 
 const fileFilter = (req, file, cb) => {
     const allowedTypes = /jpeg|jpg|png|gif|webp/;
