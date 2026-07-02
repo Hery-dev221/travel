@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const upload = require('../middlewares/upload.middleware');
 const {
     reserver,
     getMesReservations,
@@ -14,9 +13,10 @@ const {
 const authMiddleware = require('../middlewares/auth.middleware');
 const adminMiddleware = require('../middlewares/admin.middleware');
 
-// Route de réservation avec upload de fichier (multer)
-router.post('/', authMiddleware, upload.single('preuve_paiement'), reserver);
+// IMPORTANT : Importer uploadPreuve SEULEMENT quand nécessaire
+const { uploadPreuve } = require('../middlewares/upload.middleware');
 
+router.post('/', authMiddleware, uploadPreuve.single('preuve_paiement'), reserver);
 router.get('/mes-reservations', authMiddleware, getMesReservations);
 router.get('/admin/all', authMiddleware, adminMiddleware, getAllReservationsAdmin);
 router.get('/admin/en-attente', authMiddleware, adminMiddleware, getReservationsEnAttenteController);
