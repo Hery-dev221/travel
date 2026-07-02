@@ -4,12 +4,10 @@ const fs = require('fs');
 
 const isVercel = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
 
-let storagePreuves;
-let storageVehicules;
+let storage;
 
 if (isVercel) {
-    storagePreuves = multer.memoryStorage();
-    storageVehicules = multer.memoryStorage();
+    storage = multer.memoryStorage();
 } else {
     const uploadDir = path.join(__dirname, '../../uploads');
     const preuvesDir = path.join(__dirname, '../../uploads/preuves');
@@ -25,25 +23,19 @@ if (isVercel) {
     ensureDirExists(preuvesDir);
     ensureDirExists(vehiculesDir);
 
-    storagePreuves = multer.diskStorage({
+    storage = multer.diskStorage({
         destination: (req, file, cb) => {
-            cb(null, preuvesDir);
+            if (file.fieldname === 'photo_voiture') {
+                cb(null, vehiculesDir);
+            } else {
+                cb(null, preuvesDir);
+            }
         },
         filename: (req, file, cb) => {
             const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
             const ext = path.extname(file.originalname);
-            cb(null, `preuve-${uniqueSuffix}${ext}`);
-        }
-    });
-
-    storageVehicules = multer.diskStorage({
-        destination: (req, file, cb) => {
-            cb(null, vehiculesDir);
-        },
-        filename: (req, file, cb) => {
-            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-            const ext = path.extname(file.originalname);
-            cb(null, `vehicule-${uniqueSuffix}${ext}`);
+            const prefix = file.fieldname === 'photo_voiture' ? 'vehicule' : 'preuve';
+            cb(null, `${prefix}-${uniqueSuffix}${ext}`);
         }
     });
 }
@@ -60,21 +52,15 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
-const uploadPreuve = multer({
-    storage: storagePreuves,
-    limits: { fileSize: 5 * 1024 * 1024 },
-    fileFilter: fileFilter
-});
-
-const uploadVehicule = multer({
-    storage: storageVehicules,
+const upload = multer({
+    storage: storage,
     limits: { fileSize: 5 * 1024 * 1024 },
     fileFilter: fileFilter
 });
 
 module.exports = {
-    uploadPreuve,
-    uploadVehicule,
-    upload: uploadPreuve,
-    single: (fieldName) => uploadPreuve.single(fieldName)
+    uploadPreuve: upload,
+    uploadVehicule: upload,
+    upload: upload,
+    single: (fieldName) => upload.single(fieldName)
 };
