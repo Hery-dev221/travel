@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>TRAVEL - Mon historique</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/client-common.css">
+    <script src="/js/config.js"></script>
+    <style>
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .section-title h2 {
+            color: var(--marine);
+            font-size: 2rem;
+            font-weight: bold;
+            position: relative;
+            display: inline-block;
+        }
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--yellow);
+        }
+        .voyage-item {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .voyage-item h5 {
+            color: var(--marine);
+            font-weight: bold;
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
+        }
+        .card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: none;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .btn-primary {
+            background-color: var(--blue-sky);
+            border: none;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: var(--marine);
+            transform: scale(1.02);
+        }
+        .btn-outline-danger {
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            background: transparent;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            transition: 0.3s;
+        }
+        .btn-outline-danger:hover {
+            background-color: var(--danger);
+            color: white;
+        }
+        .statut-confirme {
+            background-color: var(--success);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .statut-attente {
+            background-color: var(--yellow);
+            color: var(--marine);
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .statut-annule {
+            background-color: var(--danger);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .statut-termine {
+            background-color: var(--marine);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .trajet-info-line {
+            margin-bottom: 4px;
+            font-size: 0.85rem;
+        }
+
+        .trajet-info-line i {
+            width: 20px;
+            color: var(--blue-sky);
+        }
+
+        .trajet-label {
+            color: var(--text-gray);
+            font-weight: 500;
+        }
+
+        .vehicle-thumb {
+            width: 100%;
+            max-width: 100px;
+            height: 75px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .photo-col {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (max-width: 768px) {
+            .section-title h2 {
+                font-size: 1.5rem;
+            }
+            .vehicle-thumb {
+                max-width: 70px;
+                height: 55px;
+            }
+            .trajet-info-line {
+                font-size: 0.75rem;
+            }
+            .photo-col {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="header-container"></div>
+
+    <div class="container my-5">
+        <div class="section-title">
+            <h2>Mon historique de reservations</h2>
+        </div>
+        <div id="reservations-container"></div>
+    </div>
+
+    <div id="footer-container"></div>
+
+<script>
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+        window.location.href = '/connexion.html';
+    }
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = '/index.html';
+    }
+
+    async function loadReservations() {
+        const container = document.getElementById('reservations-container');
+        container.innerHTML = '<div class="text-center">Chargement...</div>';
+        
+        try {
+            const response = await fetch(`${API_URL}/reservations/mes-reservations`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const reservations = await response.json();
+            
+            if (reservations.length === 0) {
+                container.innerHTML = '<div class="card text-center"><p>Aucune reservation trouvee.</p><a href="/reservation.html" class="btn btn-primary">Reserver maintenant</a></div>';
+                return;
+            }
+            
+            container.innerHTML = reservations.map(res => {
+                let statutClass = '';
+                let statutText = '';
+                switch(res.statut_reservation) {
+                    case 'confirmee': statutClass = 'statut-confirme'; statutText = 'Confirmee'; break;
+                    case 'en_attente': statutClass = 'statut-attente'; statutText = 'En attente'; break;
+                    case 'annulee': statutClass = 'statut-annule'; statutText = 'Annulee'; break;
+                    default: statutClass = 'statut-termine'; statutText = 'Terminee';
+                }
+                
+                const dateVoyage = new Date(res.date_depart).toLocaleDateString('fr-FR');
+                const heureVoyage = res.heure_depart?.substring(0,5) || '--:--';
+                const dateResa = new Date(res.date_reservation).toLocaleDateString('fr-FR');
+                
+                const canAnnuler = res.statut_reservation !== 'annulee' && new Date(res.date_depart) > new Date();
+                
+                let photoHtml = '';
+                let marque = '';
+                
+                if (res.vehicule_photo) {
+                    photoHtml = `
+                        <img src="${res.vehicule_photo}" alt="${res.vehicule_marque || 'Vehicule'}" class="vehicle-thumb">
+                    `;
+                }
+                
+                if (res.vehicule_marque) {
+                    marque = res.vehicule_marque;
+                }
+                
+                return `
+                    <div class="voyage-item">
+                        <div class="row align-items-center">
+                            <div class="col-md-2 photo-col">
+                                ${photoHtml}
+                            </div>
+                            <div class="col-md-7">
+                                ${res.depart && res.destination ? `
+                                <div class="trajet-info-line">
+                                    <i class="fas fa-route"></i>
+                                    <span class="trajet-label">Trajet :</span>
+                                    <strong>${res.depart} → ${res.destination}</strong>
+                                </div>
+                                ` : ''}
+                                <div class="trajet-info-line">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span class="trajet-label">Depart :</span>
+                                    ${dateVoyage} à ${heureVoyage}
+                                </div>
+                                ${marque ? `
+                                <div class="trajet-info-line">
+                                    <i class="fas fa-car"></i>
+                                    <span class="trajet-label">Vehicule :</span>
+                                    ${marque}
+                                </div>
+                                ` : ''}
+                                <div class="trajet-info-line">
+                                    <i class="fas fa-users"></i>
+                                    <span class="trajet-label">Passagers :</span>
+                                    ${res.nombre_passagers || '1'} passager(s) - Sièges: ${res.sieges || 'Non specifies'}
+                                </div>
+                                <div class="trajet-info-line">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                    <span class="trajet-label">frais total :</span>
+                                    <strong class="voyage-price">${res.frais_total?.toLocaleString() || '?'} Ar</strong>
+                                    <small class="text-muted">/ personne</small>
+                                </div>
+                                <div class="mt-1">
+                                    <span class="${statutClass}">${statutText}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-end">
+                                <small class="text-muted d-block">Reserve le ${dateResa}</small>
+                                ${canAnnuler ? `<button class="btn-outline-danger btn-sm mt-2" onclick="annulerReservation(${res.id})">Annuler</button>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        } catch (error) {
+            console.error('Erreur:', error);
+            container.innerHTML = '<div class="alert alert-danger text-center">Erreur de chargement</div>';
+        }
+    }
+    
+    async function annulerReservation(id) {
+        if (!confirm('Annuler cette reservation ?')) return;
+        
+        try {
+            const response = await fetch(`${API_URL}/reservations/${id}/annuler`, {
+                method: 'PUT',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            if (response.ok) {
+                alert('Reservation annulee');
+                loadReservations();
+            } else {
+                const error = await response.json();
+                alert('Erreur: ' + (error.message || 'Erreur lors de l\'annulation'));
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            alert('Erreur de connexion au serveur');
+        }
+    }
+    
+    loadReservations();
+
+    fetch('/client-header.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('header-container').innerHTML = data;
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const nameSpan = document.getElementById('client-user-name');
+            if (nameSpan) nameSpan.innerText = user.nom || 'Client';
+        })
+        .catch(error => console.error('Erreur chargement header:', error));
+
+    fetch('/client-footer.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('footer-container').innerHTML = data;
+        })
+        .catch(error => console.error('Erreur chargement footer:', error));
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/client-common.js"></script>
+</body>
+</html>

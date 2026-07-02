@@ -1,0 +1,41 @@
+<div class="sidebar">
+    <div class="sidebar-brand">
+        <span>TRAVEL.</span>
+    </div>
+    <ul class="sidebar-menu">
+        <li id="menu-dashboard" onclick="window.location.href='dashboard-admin.html'">
+            <i class="fas fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+        </li>
+        <li id="menu-trajets" onclick="window.location.href='trajets-admin.html'">
+            <i class="fas fa-bus"></i>
+            <span>Trajets</span>
+        </li>
+        <li id="menu-vehicules" onclick="window.location.href='vehicules-admin.html'">
+            <i class="fas fa-shuttle-van"></i>
+            <span>Vehicules</span>
+        </li>
+        <li id="menu-reservations" onclick="window.location.href='reservations-admin.html'">
+            <i class="fas fa-ticket-alt"></i>
+            <span>Reservations</span>
+        </li>
+        <li id="menu-avis" onclick="window.location.href='avis-admin.html'">
+            <i class="fas fa-star"></i>
+            <span>Avis</span>
+        </li>
+        <li id="menu-utilisateurs" onclick="window.location.href='utilisateurs-admin.html'">
+            <i class="fas fa-users"></i>
+            <span>Utilisateurs</span>
+        </li>
+    </ul>
+    <div class="sidebar-footer" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Deconnexion</span>
+    </div>
+</div>
+<script>
+    function logout() {
+        localStorage.clear();
+        window.location.href = '/connexion.html';
+    }
+</script>

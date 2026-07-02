@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>TRAVEL - Accueil</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="/js/config.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background-color: #f5f5f5; }
+
+        .navbar-fixed {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: transparent;
+            transition: background-color 0.4s ease;
+            box-shadow: none;
+            padding: 1rem 2rem;
+        }
+        .navbar-fixed.scrolled {
+            background-color: #1C2D4A !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #F9B81B !important;
+        }
+        .navbar-brand span { color: white !important; }
+        .nav-link {
+            color: white !important;
+            font-weight: 500;
+            transition: 0.3s;
+            padding: 0.5rem 1rem !important;
+        }
+        .nav-link:hover { color: #F9B81B !important; }
+        .navbar-toggler { border-color: rgba(255,255,255,0.5); }
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,255,255,0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        .hero {
+            background-image: url('/img/travelimage2.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 400px;
+            height: 40rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 4rem 1rem;
+            position: relative;
+            margin-top: 0;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(28,45,74,0.5);
+            z-index: 0;
+        }
+        .hero .container { position: relative; z-index: 1; }
+        .hero h1 { font-size: clamp(1.8rem, 5vw, 3rem); font-weight: bold; margin-bottom: 1rem; }
+        .hero p { font-size: clamp(0.9rem, 3vw, 1.2rem); margin-bottom: 2rem; padding: 0 1rem; }
+
+        .btn { padding: 10px 20px; font-size: clamp(0.8rem, 3vw, 1rem); white-space: nowrap; }
+        .btn-primary {
+            background-color: #4A90E2;
+            border: none;
+            transition: 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #1C2D4A;
+            transform: scale(1.02);
+        }
+        .btn-lg { padding: 12px 30px; font-size: clamp(0.9rem, 3.5vw, 1.1rem); }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 0 1rem;
+        }
+        .section-title h2 {
+            color: #1C2D4A;
+            font-size: clamp(1.3rem, 5vw, 2rem);
+            font-weight: bold;
+        }
+
+        .vehicule-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .vehicule-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 35px rgba(0,0,0,0.15);
+        }
+        .vehicule-nom {
+            background-color: #1C2D4A;
+            padding: 1rem;
+            text-align: center;
+        }
+        .vehicule-nom h3 {
+            margin: 0;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .vehicule-photo {
+            padding: 1.5rem;
+            text-align: center;
+            background-color: #f8f9fa;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .vehicule-img {
+            width: 100%;
+            max-height: 180px;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+        .vehicule-card:hover .vehicule-img {
+            transform: scale(1.05);
+        }
+        .vehicule-description {
+            padding: 1.2rem;
+            text-align: center;
+            border-top: 1px solid #eee;
+            background-color: white;
+            flex: 1;
+        }
+        .vehicule-description p {
+            margin: 0;
+            color: #555;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+        .vehicule-places {
+            display: inline-block;
+            background-color: #4A90E2;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .badge-quantite {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #F9B81B;
+            color: #1C2D4A;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        .voyage-item {
+            background-color: white;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .voyage-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .voyage-price {
+            color: #4A90E2;
+            font-weight: bold;
+            font-size: clamp(1rem, 4vw, 1.2rem);
+        }
+
+        .statut-confirme {
+            background-color: #2D6A4F;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .trajet-info-line {
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: baseline;
+        }
+        .trajet-info-line i {
+            width: 22px;
+            color: #4A90E2;
+            flex-shrink: 0;
+        }
+        .trajet-label {
+            color: #6c757d;
+            font-weight: 500;
+            min-width: 70px;
+            flex-shrink: 0;
+        }
+        .trajet-value {
+            word-break: break-word;
+        }
+
+        .vehicle-thumb {
+            width: 100%;
+            max-width: 100px;
+            height: 75px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        .photo-col {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-reserver {
+            background-color: #4A90E2;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            border: none;
+            transition: 0.3s;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: inline-block;
+        }
+        .btn-reserver:hover {
+            background-color: #1C2D4A;
+            transform: scale(1.02);
+            color: white;
+        }
+        .btn-col {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            height: 100%;
+        }
+
+        .avis-carousel-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 0 0.5rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            height: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .avis-carousel-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        .avis-carousel-etoiles { color: #F9B81B; margin-bottom: 0.8rem; font-size: 1rem; }
+        .avis-carousel-commentaire { font-style: italic; color: #333; margin-bottom: 0.8rem; font-size: 0.9rem; }
+        .avis-carousel-nom { font-weight: 600; color: #1C2D4A; font-size: 0.85rem; }
+        .avis-carousel-date { font-size: 0.65rem; color: #6c757d; }
+
+        .footer {
+            background-color: #1C2D4A;
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+        .footer h4 { font-size: clamp(1.2rem, 4vw, 1.5rem); color: #F9B81B; }
+        .footer a { color: #F9B81B; text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+
+        .container { padding-left: 15px; padding-right: 15px; max-width: 1200px; margin: 0 auto; }
+        .row { display: flex; flex-wrap: wrap; margin: 0 -10px; }
+        .col-md-4 { flex: 0 0 100%; max-width: 100%; padding: 0 10px; }
+        @media (min-width: 768px) { .col-md-4 { flex: 0 0 33.333%; max-width: 33.333%; } .hero { min-height: 500px; } }
+        .text-muted { color: #6c757d !important; font-size: clamp(0.7rem, 3vw, 0.8rem); }
+        .my-5 { margin-top: 2rem !important; margin-bottom: 2rem !important; }
+        @media (min-width: 768px) { .my-5 { margin-top: 3rem !important; margin-bottom: 3rem !important; } }
+        img { max-width: 100%; height: auto; }
+        hr { background-color: rgba(255,255,255,0.2); margin: 1.5rem 0; }
+        @media (max-width: 768px) { 
+            .avis-carousel-card { padding: 1rem; } 
+            .carousel-control-prev-icon, .carousel-control-next-icon { padding: 15px; } 
+            .vehicle-thumb { max-width: 70px; height: 55px; } 
+            .photo-col { margin-bottom: 10px; } 
+            .trajet-info-line { font-size: 0.75rem; }
+            .trajet-label { min-width: 60px; }
+            .trajet-info-line i { width: 18px; }
+            .btn-col { justify-content: center; margin-top: 10px; }
+        }
+        
+        .loader { text-align: center; padding: 2rem; color: #1C2D4A; }
+        .loader i { font-size: 2rem; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .carousel-control-prev-icon, .carousel-control-next-icon {
+            background-color: #1C2D4A;
+            border-radius: 50%;
+            padding: 20px;
+            background-size: 50% 50%;
+        }
+
+        /* ===== NOUVEAUX STYLES ===== */
+        .search-bar {
+            background: white;
+            border-radius: 50px;
+            padding: 0.3rem 0.3rem 0.3rem 1.5rem;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .search-bar input {
+            border: none;
+            outline: none;
+            flex: 1;
+            padding: 0.7rem 0;
+            font-size: 0.9rem;
+            background: transparent;
+        }
+        .search-bar input::placeholder {
+            color: #aaa;
+        }
+        .search-bar button {
+            background-color: #4A90E2;
+            border: none;
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .search-bar button:hover {
+            background-color: #1C2D4A;
+        }
+        .search-bar .btn-clear {
+            background: transparent;
+            color: #aaa;
+            padding: 0.5rem;
+            display: none;
+        }
+        .search-bar .btn-clear:hover {
+            color: #EF476F;
+        }
+
+        .trajet-count {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+        .trajet-count span {
+            font-weight: bold;
+            color: #1C2D4A;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+        .empty-state i {
+            font-size: 4rem;
+            color: #ddd;
+            margin-bottom: 1rem;
+        }
+        .empty-state h5 {
+            color: #1C2D4A;
+            font-weight: 600;
+        }
+        .empty-state p {
+            color: #6c757d;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .section-header .badge-count {
+            background-color: #4A90E2;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        .btn-outline-primary-custom {
+            background: transparent;
+            border: 2px solid #4A90E2;
+            color: #4A90E2;
+            padding: 6px 18px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: 0.3s;
+            font-size: 0.85rem;
+            text-decoration: none;
+        }
+        .btn-outline-primary-custom:hover {
+            background-color: #4A90E2;
+            color: white;
+        }
+
+        /* Animation */
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pulse-loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #4A90E2;
+            animation: pulse 1.2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(0.8); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .skeleton-item {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: white;
+            border-radius: 12px;
+        }
+        .skeleton-item .skeleton-img {
+            width: 80px;
+            height: 60px;
+            border-radius: 8px;
+        }
+        .skeleton-item .skeleton-line {
+            height: 14px;
+            margin: 6px 0;
+            border-radius: 4px;
+        }
+        .skeleton-item .skeleton-line.short { width: 60%; }
+        .skeleton-item .skeleton-line.medium { width: 80%; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-fixed" id="mainNavbar">
+    <div class="container">
+        <a class="navbar-brand" href="/index.html">TRAVEL<span>.</span></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="/index.html">Accueil</a></li>
+                <li class="nav-item"><a class="nav-link" href="/reservation.html">Reservation</a></li>
+                <li class="nav-item"><a class="nav-link" href="/connexion.html">Connexion</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="container">
+        <h1>Voyagez en toute serenite</h1>
+        <p>Avec TRAVEL, reservez vos trajets facilement et en toute confiance</p>
+        <button class="btn btn-primary btn-lg" onclick="window.location.href='/reservation.html'">Reserver maintenant</button>
+    </div>
+</section>
+
+<div class="container my-5">
+    <div class="section-title">
+        <h2>Voyages dans les 2 prochains jours</h2>
+    </div>
+
+    <!-- BARRE DE RECHERCHE -->
+    <div class="search-bar mb-4" id="searchBar">
+        <i class="fas fa-search text-muted" style="font-size: 0.9rem;"></i>
+        <input type="text" id="searchInput" placeholder="Rechercher une destination..." aria-label="Rechercher un trajet">
+        <button class="btn-clear" id="clearSearchBtn" onclick="clearSearch()" title="Effacer"><i class="fas fa-times"></i></button>
+        <button onclick="applySearch()">Rechercher</button>
+    </div>
+
+    <!-- COMPTEUR DE TRAJETS -->
+    <div class="trajet-count" id="trajetCount">Chargement des trajets...</div>
+
+    <!-- CONTENEUR DES TRAJETS -->
+    <div id="trajets-container">
+        <!-- Skelettons -->
+        <div class="skeleton-item fade-in">
+            <div class="row align-items-center">
+                <div class="col-md-2"><div class="skeleton skeleton-img"></div></div>
+                <div class="col-md-7">
+                    <div class="skeleton skeleton-line medium"></div>
+                    <div class="skeleton skeleton-line short"></div>
+                    <div class="skeleton skeleton-line short"></div>
+                    <div class="skeleton skeleton-line short"></div>
+                </div>
+                <div class="col-md-3"><div class="skeleton skeleton-line" style="width: 40%; margin-left: auto;"></div></div>
+            </div>
+        </div>
+        <div class="skeleton-item fade-in">
+            <div class="row align-items-center">
+                <div class="col-md-2"><div class="skeleton skeleton-img"></div></div>
+                <div class="col-md-7">
+                    <div class="skeleton skeleton-line medium"></div>
+                    <div class="skeleton skeleton-line short"></div>
+                    <div class="skeleton skeleton-line short"></div>
+                    <div class="skeleton skeleton-line short"></div>
+                </div>
+                <div class="col-md-3"><div class="skeleton skeleton-line" style="width: 40%; margin-left: auto;"></div></div>
+            </div>
+        </div>
+        <div class="skeleton-item fade-in">
+            <div class="row align-items-center">
+                <div class="col-md-2"><div class="skeleton skeleton-img"></div></div>
+                <div class="col-md-7">
+                    <div class="skeleton skeleton-line medium"></div>
+                    <div class="skeleton skeleton-line short"></div>
+                    <div class="skeleton skeleton-line short"></div>
+                    <div class="skeleton skeleton-line short"></div>
+                </div>
+                <div class="col-md-3"><div class="skeleton skeleton-line" style="width: 40%; margin-left: auto;"></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="section-title">
+        <h2>Nos Vehicules</h2>
+    </div>
+    <div id="vehicules-container" class="row">
+        <div class="loader">
+            <i class="fas fa-spinner"></i>
+            <p>Chargement des vehicules...</p>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="section-title">
+        <h2>Retour des utilisateurs</h2>
+    </div>
+    <div id="avisCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+        <div class="carousel-inner" id="avis-carousel-inner">
+            <div class="carousel-item active">
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        <div class="avis-carousel-card">
+                            <div class="text-center">Chargement des avis...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#avisCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#avisCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+    <div class="carousel-indicators" id="carousel-indicators"></div>
+    <div class="text-center mt-4">
+        <button class="btn btn-primary" onclick="window.location.href='/connexion.html'">Laisser un avis</button>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <h4>TRAVEL</h4>
+                <p>Votre partenaire de voyage de confiance.</p>
+            </div>
+            <div class="col-md-4 mb-4">
+                <h5>Liens rapides</h5>
+                <ul class="list-unstyled">
+                    <li><a href="/index.html">Accueil</a></li>
+                    <li><a href="/reservation.html">Reservation</a></li>
+                    <li><a href="/connexion.html">Connexion</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4 mb-4">
+                <h5>Contact</h5>
+                <p>travel@gmail.com</p>
+                <p>+261 34 00 000 00</p>
+            </div>
+        </div>
+        <hr>
+        <p>© 2025 TRAVEL - Tous droits reserves</p>
+    </div>
+</footer>
+
+<script>
+    let carouselInstance = null;
+    let allTrajets = [];
+    let searchTimeout = null;
+
+    function initCarousel() {
+        const carouselElement = document.getElementById('avisCarousel');
+        if (carouselInstance) carouselInstance.dispose();
+        carouselInstance = new bootstrap.Carousel(carouselElement, { interval: 5000, ride: 'carousel', wrap: true });
+    }
+
+    function updateCarouselIndicators(itemsCount) {
+        const indicatorsContainer = document.getElementById('carousel-indicators');
+        if (!indicatorsContainer) return;
+        let html = '';
+        for (let i = 0; i < itemsCount; i++) {
+            html += `<button type="button" data-bs-target="#avisCarousel" data-bs-slide-to="${i}" ${i === 0 ? 'class="active"' : ''} aria-label="Slide ${i+1}"></button>`;
+        }
+        indicatorsContainer.innerHTML = html;
+    }
+
+    function getUniqueVehiculesByMarque(vehicules) {
+        const groupedByMarque = {};
+        vehicules.forEach(vehicule => {
+            const marque = vehicule.marque_modele;
+            if (!groupedByMarque[marque]) {
+                groupedByMarque[marque] = [];
+            }
+            groupedByMarque[marque].push(vehicule);
+        });
+        const uniqueVehicules = [];
+        for (const marque in groupedByMarque) {
+            const vehiclesOfMarque = groupedByMarque[marque];
+            const randomIndex = Math.floor(Math.random() * vehiclesOfMarque.length);
+            const selectedVehicle = { ...vehiclesOfMarque[randomIndex] };
+            selectedVehicle.nombre_disponible = vehiclesOfMarque.length;
+            uniqueVehicules.push(selectedVehicle);
+        }
+        return uniqueVehicules;
+    }
+
+    async function loadVehicules() {
+        const container = document.getElementById('vehicules-container');
+        try {
+            const response = await fetch(`${API_URL}/vehicules`);
+            const vehicules = await response.json();
+            if (!vehicules || vehicules.length === 0) {
+                container.innerHTML = '<div class="col-12 text-center"><p>Aucun vehicule disponible pour le moment.</p></div>';
+                return;
+            }
+            const vehiculesDisponibles = vehicules.filter(v => v.etat === 'disponible');
+            if (vehiculesDisponibles.length === 0) {
+                container.innerHTML = '<div class="col-12 text-center"><p>Aucun vehicule disponible pour le moment.</p></div>';
+                return;
+            }
+            const uniqueVehicules = getUniqueVehiculesByMarque(vehiculesDisponibles);
+            container.innerHTML = uniqueVehicules.map(vehicule => {
+                const badgeHtml = vehicule.nombre_disponible > 1 
+                    ? `<span class="badge-quantite"><i class="fas fa-car"></i> ${vehicule.nombre_disponible} disponibles</span>` 
+                    : '';
+                return `
+                <div class="col-md-4 mb-4">
+                    <div class="vehicule-card">
+                        ${badgeHtml}
+                        <div class="vehicule-nom">
+                            <h3>${vehicule.marque_modele}</h3>
+                        </div>
+                        <div class="vehicule-photo">
+                            <img src="${vehicule.photo_voiture || '/img/default-car.jpg'}" 
+                                 class="vehicule-img" 
+                                 alt="${vehicule.marque_modele}"
+                                 onerror="this.src='https://via.placeholder.com/300x180?text=Image+non+disponible'">
+                        </div>
+                        <div class="vehicule-description">
+                            <p>${vehicule.description || 'Description non disponible'}</p>
+                            <span class="vehicule-places">
+                                <i class="fas fa-users"></i> ${vehicule.places} places
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            `}).join('');
+        } catch(error) { 
+            console.error('Erreur chargement vehicules:', error);
+            container.innerHTML = '<div class="col-12 text-center"><p class="text-danger">Erreur lors du chargement des vehicules.</p></div>';
+        }
+    }
+
+    async function loadAvis() {
+        const carouselInner = document.getElementById('avis-carousel-inner');
+        try {
+            const response = await fetch(`${API_URL}/avis/publies`);
+            const avis = await response.json();
+            if (!avis || avis.length === 0) {
+                carouselInner.innerHTML = `<div class="carousel-item active"><div class="row justify-content-center"><div class="col-md-6"><div class="avis-carousel-card"><div class="text-center">Aucun avis pour le moment.</div></div></div></div></div>`;
+                updateCarouselIndicators(1);
+                return;
+            }
+            let itemsHtml = '';
+            let slideIndex = 0;
+            for (let i = 0; i < avis.length; i += 2) {
+                const avis1 = avis[i];
+                const avis2 = avis[i + 1];
+                itemsHtml += `<div class="carousel-item ${slideIndex === 0 ? 'active' : ''}"><div class="row justify-content-center">
+                    <div class="col-md-6"><div class="avis-carousel-card"><div class="avis-carousel-etoiles">${'★'.repeat(avis1.note)}${'☆'.repeat(5 - avis1.note)}</div><div class="avis-carousel-commentaire">"${avis1.commentaire.replace(/"/g, '&quot;')}"</div><div class="avis-carousel-nom">— ${avis1.client_nom}</div><div class="avis-carousel-date">${new Date(avis1.date_publication).toLocaleDateString('fr-FR')}</div></div></div>
+                    ${avis2 ? `<div class="col-md-6"><div class="avis-carousel-card"><div class="avis-carousel-etoiles">${'★'.repeat(avis2.note)}${'☆'.repeat(5 - avis2.note)}</div><div class="avis-carousel-commentaire">"${avis2.commentaire.replace(/"/g, '&quot;')}"</div><div class="avis-carousel-nom">— ${avis2.client_nom}</div><div class="avis-carousel-date">${new Date(avis2.date_publication).toLocaleDateString('fr-FR')}</div></div></div>` : `<div class="col-md-6"><div class="avis-carousel-card"><div class="text-center text-muted">Soyez le prochain a donner votre avis !</div></div></div>`}
+                </div></div>`;
+                slideIndex++;
+            }
+            carouselInner.innerHTML = itemsHtml;
+            updateCarouselIndicators(slideIndex);
+            initCarousel();
+        } catch(error) { console.error('Erreur chargement avis:', error); }
+    }
+
+    function renderTrajets(trajets) {
+        const container = document.getElementById('trajets-container');
+        const countDisplay = document.getElementById('trajetCount');
+        
+        if (!trajets || trajets.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state fade-in">
+                    <i class="fas fa-bus"></i>
+                    <h5>Aucun trajet disponible</h5>
+                    <p class="text-muted">Aucun voyage ne correspond à votre recherche ou il n'y a pas de trajets disponibles.</p>
+                    <button class="btn btn-primary btn-sm" onclick="clearSearch()">Voir tous les trajets</button>
+                </div>
+            `;
+            countDisplay.innerHTML = `<i class="fas fa-info-circle"></i> Aucun trajet trouvé`;
+            return;
+        }
+
+        let html = '';
+        trajets.forEach(trajet => {
+            let photoHtml = '';
+            let marque = '';
+            let vehiculePlacesTotal = trajet.vehicule_places || '?';
+            let placesDisponibles = trajet.places_disponibles || '?';
+            
+            if (trajet.vehicule_photo) {
+                photoHtml = `
+                    <img src="${trajet.vehicule_photo}" alt="${trajet.vehicule_marque || 'Vehicule'}" class="vehicle-thumb">
+                `;
+            }
+            if (trajet.vehicule_marque) {
+                marque = trajet.vehicule_marque;
+            }
+            
+            const dateVoyage = new Date(trajet.date_depart).toLocaleDateString('fr-FR');
+            const heureVoyage = trajet.heure_depart?.substring(0,5) || '--:--';
+            
+            html += `
+                <div class="voyage-item fade-in">
+                    <div class="row align-items-center">
+                        <div class="col-md-2 photo-col">
+                            ${photoHtml}
+                        </div>
+                        <div class="col-md-7">
+                            <div class="trajet-info-line">
+                                <i class="fas fa-route"></i>
+                                <span class="trajet-label">Trajet :</span>
+                                <span class="trajet-value"><strong>${trajet.depart} → ${trajet.destination}</strong></span>
+                            </div>
+                            <div class="trajet-info-line">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span class="trajet-label">Depart :</span>
+                                <span class="trajet-value">${dateVoyage} à ${heureVoyage}</span>
+                            </div>
+                            ${marque ? `
+                            <div class="trajet-info-line">
+                                <i class="fas fa-car"></i>
+                                <span class="trajet-label">Vehicule :</span>
+                                <span class="trajet-value">${marque}</span>
+                            </div>
+                            ` : ''}
+                            <div class="trajet-info-line">
+                                <i class="fas fa-chair"></i>
+                                <span class="trajet-label">Places :</span>
+                                <span class="trajet-value">${vehiculePlacesTotal} places - ${placesDisponibles} places disponibles</span>
+                            </div>
+                            <div class="trajet-info-line">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <span class="trajet-label">frais :</span>
+                                <span class="trajet-value"><strong class="voyage-price">${trajet.frais ? trajet.frais.toLocaleString() : '?'} Ar</strong> <small class="text-muted">/ personne</small></span>
+                            </div>
+                            <div class="mt-2">
+                                <span class="statut-confirme">Disponible</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3 btn-col">
+                            <button class="btn-reserver" onclick="reserverTrajet(${trajet.id})">Je reserve</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+        countDisplay.innerHTML = `<i class="fas fa-bus"></i> <span>${trajets.length}</span> trajet(s) disponible(s)`;
+        document.getElementById('clearSearchBtn').style.display = 'block';
+    }
+
+    function applySearch() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+        if (searchTerm === '') {
+            renderTrajets(allTrajets);
+            document.getElementById('clearSearchBtn').style.display = 'none';
+            return;
+        }
+
+        const filtered = allTrajets.filter(trajet => 
+            trajet.depart.toLowerCase().includes(searchTerm) ||
+            trajet.destination.toLowerCase().includes(searchTerm) ||
+            (trajet.vehicule_marque && trajet.vehicule_marque.toLowerCase().includes(searchTerm))
+        );
+        renderTrajets(filtered);
+    }
+
+    function clearSearch() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('clearSearchBtn').style.display = 'none';
+        renderTrajets(allTrajets);
+    }
+
+    document.getElementById('searchInput').addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(applySearch, 300);
+    });
+    document.getElementById('searchInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            applySearch();
+        }
+    });
+    async function loadTrajetsAVenir() {
+        const container = document.getElementById('trajets-container');
+        const countDisplay = document.getElementById('trajetCount');
+        
+        try {
+            const response = await fetch(`${API_URL}/trajets/dans-2-jours`);
+            allTrajets = await response.json();
+            
+            if (!allTrajets || allTrajets.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state fade-in">
+                        <i class="fas fa-bus"></i>
+                        <h5>Aucun trajet disponible</h5>
+                        <p class="text-muted">Aucun voyage dans les 2 prochains jours. Revenez plus tard !</p>
+                    </div>
+                `;
+                countDisplay.innerHTML = `<i class="fas fa-info-circle"></i> Aucun trajet disponible`;
+                return;
+            }
+            
+            renderTrajets(allTrajets);
+        } catch(error) {
+            console.error('Erreur chargement trajets:', error);
+            container.innerHTML = `
+                <div class="empty-state fade-in">
+                    <i class="fas fa-exclamation-circle" style="color: #EF476F;"></i>
+                    <h5>Erreur de chargement</h5>
+                    <p class="text-muted">Impossible de charger les trajets. Veuillez réessayer plus tard.</p>
+                    <button class="btn btn-primary btn-sm" onclick="loadTrajetsAVenir()">Réessayer</button>
+                </div>
+            `;
+            countDisplay.innerHTML = `<i class="fas fa-exclamation-circle" style="color: #EF476F;"></i> Erreur de chargement`;
+        }
+    }
+
+    function reserverTrajet(id) { 
+        window.location.href = `/reservation.html?trajet=${id}`; 
+    }
+
+    window.addEventListener('scroll', function() {
+        const navbar = document.getElementById('mainNavbar');
+        if (window.scrollY > 50) navbar.classList.add('scrolled');
+        else navbar.classList.remove('scrolled');
+    });
+
+    document.addEventListener('DOMContentLoaded', () => { 
+        loadVehicules();
+        loadAvis(); 
+        loadTrajetsAVenir(); 
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

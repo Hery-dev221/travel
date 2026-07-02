@@ -1,0 +1,111 @@
+:root {
+    --marine: #1C2D4A;
+    --yellow: #F9B81B;
+    --blue-sky: #4A90E2;
+    --white: #FFFFFF;
+    --gray-bg: #F5F7FA;
+    --success: #2D6A4F;
+    --danger: #EF476F;
+}
+
+.client-header {
+    background-color: var(--marine);
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.client-header .navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--yellow) !important;
+}
+
+.client-header .navbar-brand span {
+    color: white !important;
+}
+
+.client-header .navbar-brand i {
+    color: var(--yellow);
+    margin-right: 5px;
+}
+
+.client-header .nav-link {
+    color: white !important;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.client-header .nav-link:hover {
+    color: var(--yellow) !important;
+}
+
+.client-header .dropdown-menu {
+    background-color: var(--marine);
+    border: none;
+}
+
+.client-header .dropdown-item {
+    color: white;
+}
+
+.client-header .dropdown-item:hover {
+    background-color: var(--yellow);
+    color: var(--marine);
+}
+
+body {
+    padding-top: 80px;
+}
+
+.client-footer {
+    background-color: var(--marine);
+    color: white;
+    padding: 2rem;
+    text-align: center;
+    margin-top: 3rem;
+}
+
+.client-footer h4 {
+    color: var(--yellow);
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+}
+
+.client-footer p {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.client-footer a {
+    color: var(--yellow);
+    text-decoration: none;
+}
+
+.client-footer a:hover {
+    text-decoration: underline;
+}
+
+.client-footer hr {
+    background-color: rgba(255,255,255,0.2);
+    margin: 1rem 0;
+}
+
+@media (max-width: 768px) {
+    .client-header .navbar-brand {
+        font-size: 1.2rem;
+    }
+    .client-footer {
+        padding: 1.5rem;
+    }
+    .client-footer h4 {
+        font-size: 1.1rem;
+    }
+    .client-footer p {
+        font-size: 0.8rem;
+    }
+}

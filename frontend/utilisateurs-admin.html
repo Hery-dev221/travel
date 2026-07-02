@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>TRAVEL - Admin - Gestion des Utilisateurs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="/js/config.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background-color: #f5f7fa; }
+        :root { --marine: #1C2D4A; --yellow: #F9B81B; --blue-sky: #4A90E2; --white: #FFFFFF; --gray-bg: #F5F7FA; --success: #2D6A4F; --danger: #EF476F; }
+
+        .admin-container { display: flex; min-height: 100vh; }
+        .sidebar { width: 280px; background-color: var(--marine); color: white; display: flex; flex-direction: column; position: fixed; height: 100vh; left: 0; top: 0; transition: all 0.3s ease; z-index: 1000; }
+        .sidebar-brand { padding: 1.5rem; font-size: 1.5rem; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: center; }
+        .sidebar-brand i { color: var(--yellow); margin-right: 8px; }
+        .sidebar-brand span { color: white; }
+        .sidebar-menu { list-style: none; padding: 0; margin: 1.5rem 0; flex: 1; }
+        .sidebar-menu li { padding: 12px 20px; margin: 5px 15px; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 12px; color: rgba(255,255,255,0.8); }
+        .sidebar-menu li i { width: 24px; font-size: 1.1rem; color: var(--yellow); }
+        .sidebar-menu li:hover { background-color: rgba(255,255,255,0.1); color: white; }
+        .sidebar-menu li.active { background-color: var(--yellow); color: var(--marine); }
+        .sidebar-menu li.active i { color: var(--marine); }
+        .sidebar-footer { padding: 1rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.3s; margin: 0 15px 15px 15px; border-radius: 12px; }
+        .sidebar-footer:hover { background-color: rgba(255,255,255,0.1); }
+        .sidebar-footer i { color: var(--yellow); font-size: 1.1rem; }
+        .main-content { margin-left: 280px; flex: 1; padding: 1.5rem; background-color: var(--gray-bg); min-height: 100vh; width: calc(100% - 280px); }
+        .section-title { text-align: center; margin-bottom: 2rem; }
+        .section-title h2 { color: var(--marine); font-size: 2rem; font-weight: bold; position: relative; display: inline-block; }
+        .section-title h2::after { content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 80px; height: 3px; background-color: var(--yellow); }
+        .card { background-color: white; border-radius: 15px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: none; margin-bottom: 1.5rem; }
+        .table { margin-bottom: 0; }
+        .table th { background-color: var(--marine); color: white; padding: 12px; font-weight: 500; }
+        .table td { vertical-align: middle; padding: 12px; }
+        .btn-sm { padding: 5px 12px; margin: 0 3px; font-size: 0.75rem; border-radius: 20px; }
+        .btn-danger { background-color: var(--danger); border: none; }
+        .btn-danger:hover { background-color: #c73e5e; }
+        .btn-primary { background-color: var(--blue-sky); border: none; }
+        .btn-primary:hover { background-color: var(--marine); }
+        .btn-success { background-color: var(--success); border: none; }
+        .btn-success:hover { background-color: #1e4a36; }
+        .filter-bar { display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
+        .filter-bar input { padding: 8px 12px; border-radius: 10px; border: 1px solid #ddd; width: 250px; }
+        .badge { padding: 5px 10px; border-radius: 20px; font-size: 0.7rem; }
+        .badge-en-attente { background-color: var(--yellow); color: var(--marine); }
+        .badge-actif { background-color: var(--success); color: white; }
+        .badge-rejete { background-color: var(--danger); color: white; }
+        .statut-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.65rem; font-weight: 600; display: inline-block; }
+        @media (max-width: 768px) { .sidebar { width: 70px; } .sidebar-brand span, .sidebar-menu li span, .sidebar-footer span { display: none; } .sidebar-menu li { justify-content: center; margin: 5px 10px; } .sidebar-menu li i { margin: 0; } .main-content { margin-left: 70px; width: calc(100% - 70px); } .filter-bar { flex-direction: column; } .filter-bar input { width: 100%; } }
+    </style>
+</head>
+<body>
+
+<div class="admin-container">
+    <div id="sidebar-container"></div>
+    <div class="main-content">
+        <div class="section-title">
+            <h2>Gestion des Utilisateurs</h2>
+        </div>
+
+        <div class="card">
+            <h4 class="mb-3">
+                <i class="fas fa-user-clock"></i> Comptes en attente de validation
+                <span class="badge bg-warning text-dark" id="comptes-en-attente-count">0</span>
+            </h4>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Email</th>
+                            <th>Telephone</th>
+                            <th>Statut</th>
+                            <th>Date inscription</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="comptes-en-attente-table">
+                        <tr><td colspan="7" class="text-center">Chargement...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="filter-bar">
+                <input type="text" id="searchInput" class="form-control" placeholder="Rechercher par nom ou email...">
+                <button class="btn btn-primary btn-sm" onclick="loadUtilisateurs()">
+                    <i class="fas fa-search"></i> Rechercher
+                </button>
+            </div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Email</th>
+                            <th>Telephone</th>
+                            <th>Role</th>
+                            <th>Statut</th>
+                            <th>Date inscription</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="utilisateurs-table">
+                        <tr><td colspan="8" class="text-center">Chargement...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+    if (!token || user.role !== 'admin') {
+        window.location.href = '/connexion.html';
+    }
+
+    function getStatutBadge(statut) {
+        if (statut === 'en_attente') {
+            return '<span class="statut-badge badge-en-attente">En attente</span>';
+        } else if (statut === 'actif') {
+            return '<span class="statut-badge badge-actif">Actif</span>';
+        } else if (statut === 'rejete') {
+            return '<span class="statut-badge badge-rejete">Rejete</span>';
+        }
+        return '<span class="statut-badge badge-secondary">Inconnu</span>';
+    }
+
+    async function loadComptesEnAttente() {
+        const tbody = document.getElementById('comptes-en-attente-table');
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center">Chargement...</td></tr>';
+        
+        try {
+            const response = await fetch(`${API_URL}/auth/users/en-attente`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            if (!response.ok) {
+                throw new Error('Erreur lors du chargement');
+            }
+            
+            let users = await response.json();
+            
+            if (!users || users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center">Aucun compte en attente</td></tr>';
+                document.getElementById('comptes-en-attente-count').textContent = '0';
+                return;
+            }
+            
+            document.getElementById('comptes-en-attente-count').textContent = users.length;
+            
+            tbody.innerHTML = users.map(u => `
+                <tr>
+                    <td>${u.id}</td>
+                    <td>${u.nom || '-'}</td>
+                    <td>${u.email || '-'}</td>
+                    <td>${u.telephone || '-'}</td>
+                    <td>${getStatutBadge(u.statut)}</td>
+                    <td>${u.date_inscription ? new Date(u.date_inscription).toLocaleDateString('fr-FR') : '-'}</td>
+                    <td>
+                        <button class="btn btn-sm btn-success" onclick="activerCompte(${u.id})">
+                            <i class="fas fa-check"></i> Activer
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="rejeterCompte(${u.id})">
+                            <i class="fas fa-times"></i> Rejeter
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        } catch(e) {
+            console.error('Erreur chargement comptes en attente:', e);
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center">Erreur de chargement</td></tr>';
+        }
+    }
+
+    async function loadUtilisateurs() {
+        const tbody = document.getElementById('utilisateurs-table');
+        tbody.innerHTML = '<tr><td colspan="8" class="text-center">Chargement...</td></tr>';
+        
+        try {
+            const response = await fetch(`${API_URL}/auth/users`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            if (!response.ok) {
+                throw new Error('Erreur lors du chargement');
+            }
+            
+            let users = await response.json();
+            
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            if (searchTerm) {
+                users = users.filter(u => 
+                    (u.nom && u.nom.toLowerCase().includes(searchTerm)) ||
+                    (u.email && u.email.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            if (!users || users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center">Aucun utilisateur trouve</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = users.map(u => `
+                <tr>
+                    <td>${u.id}</td>
+                    <td>${u.nom || '-'}</td>
+                    <td>${u.email || '-'}</td>
+                    <td>${u.telephone || '-'}</td>
+                    <td><span class="badge ${u.role === 'admin' ? 'bg-warning text-dark' : 'bg-info text-white'}">${u.role || 'client'}</span></td>
+                    <td>${getStatutBadge(u.statut)}</td>
+                    <td>${u.date_inscription ? new Date(u.date_inscription).toLocaleDateString('fr-FR') : '-'}</td>
+                    <td>
+                        ${u.role !== 'admin' ? `<button class="btn btn-danger btn-sm" onclick="supprimerUtilisateur(${u.id})">
+                            <i class="fas fa-trash"></i> Supprimer
+                        </button>` : '<span class="text-muted">Admin</span>'}
+                    </td>
+                </tr>
+            `).join('');
+        } catch(e) {
+            console.error('Erreur chargement utilisateurs:', e);
+            tbody.innerHTML = '<tr><td colspan="8" class="text-center">Erreur de chargement</td></tr>';
+        }
+    }
+
+    async function activerCompte(id) {
+        if (!confirm('Activer ce compte ? L\'utilisateur pourra alors se connecter.')) return;
+        
+        try {
+            const response = await fetch(`${API_URL}/auth/users/${id}/activer`, {
+                method: 'PUT',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                alert('Compte active avec succes');
+                loadComptesEnAttente();
+                loadUtilisateurs();
+            } else {
+                alert('Erreur: ' + (data.message || 'Impossible d\'activer'));
+            }
+        } catch(e) {
+            console.error('Erreur:', e);
+            alert('Erreur de connexion');
+        }
+    }
+
+    async function rejeterCompte(id) {
+        if (!confirm('Rejeter ce compte ? L\'utilisateur ne pourra pas se connecter.')) return;
+        
+        try {
+            const response = await fetch(`${API_URL}/auth/users/${id}/rejeter`, {
+                method: 'PUT',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                alert('Compte rejete');
+                loadComptesEnAttente();
+                loadUtilisateurs();
+            } else {
+                alert('Erreur: ' + (data.message || 'Impossible de rejeter'));
+            }
+        } catch(e) {
+            console.error('Erreur:', e);
+            alert('Erreur de connexion');
+        }
+    }
+
+    async function supprimerUtilisateur(id) {
+        if (!confirm('Etes-vous sur de vouloir supprimer cet utilisateur ?')) return;
+        
+        try {
+            const response = await fetch(`${API_URL}/auth/users/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                alert('Utilisateur supprime avec succes');
+                loadUtilisateurs();
+                loadComptesEnAttente();
+            } else {
+                alert('Erreur: ' + (data.message || 'Impossible de supprimer'));
+            }
+        } catch(e) {
+            console.error('Erreur:', e);
+            alert('Erreur de connexion');
+        }
+    }
+
+    loadComptesEnAttente();
+    loadUtilisateurs();
+
+    fetch('sidebar-admin.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('sidebar-container').innerHTML = data;
+            document.getElementById('menu-utilisateurs').classList.add('active');
+            window.logout = function() {
+                localStorage.clear();
+                window.location.href = '/connexion.html';
+            };
+        })
+        .catch(error => console.error('Erreur chargement sidebar:', error));
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
