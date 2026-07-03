@@ -1,7 +1,8 @@
-const pool = require('../config/db');
+const getPool = require('../config/db');
 
 const getAllTrajets = async () => {
-    const [rows] = await pool.query(`
+    const pool = getPool();
+    const result = await pool.query(`
         SELECT t.*, 
                v.marque_modele AS vehicule_marque, 
                v.photo_voiture AS vehicule_photo, 
@@ -11,11 +12,12 @@ const getAllTrajets = async () => {
         LEFT JOIN vehicules v ON t.vehicule_id = v.id 
         ORDER BY t.date_depart DESC
     `);
-    return rows;
+    return result.rows;
 };
 
 const getTrajetsAVenir = async () => {
-    const [rows] = await pool.query(`
+    const pool = getPool();
+    const result = await pool.query(`
         SELECT t.*, 
                v.marque_modele AS vehicule_marque, 
                v.photo_voiture AS vehicule_photo, 
@@ -23,15 +25,16 @@ const getTrajetsAVenir = async () => {
                v.immatriculations AS vehicule_immatriculation
         FROM trajets t 
         LEFT JOIN vehicules v ON t.vehicule_id = v.id 
-        WHERE t.date_depart >= CURDATE() AND t.statut = 'actif'
+        WHERE t.date_depart >= CURRENT_DATE AND t.statut = 'actif'
         ORDER BY t.date_depart ASC, t.heure_depart ASC
         LIMIT 10
     `);
-    return rows;
+    return result.rows;
 };
 
 const getTrajetsDans2Jours = async () => {
-    const [rows] = await pool.query(`
+    const pool = getPool();
+    const result = await pool.query(`
         SELECT t.*, 
                v.marque_modele AS vehicule_marque, 
                v.photo_voiture AS vehicule_photo, 
@@ -39,15 +42,16 @@ const getTrajetsDans2Jours = async () => {
                v.immatriculations AS vehicule_immatriculation
         FROM trajets t 
         LEFT JOIN vehicules v ON t.vehicule_id = v.id 
-        WHERE t.date_depart BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 2 DAY) 
+        WHERE t.date_depart BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '2 days'
         AND t.statut = 'actif'
         ORDER BY t.date_depart ASC, t.heure_depart ASC
     `);
-    return rows;
+    return result.rows;
 };
 
 const getTrajetsPasses = async () => {
-    const [rows] = await pool.query(`
+    const pool = getPool();
+    const result = await pool.query(`
         SELECT t.*, 
                v.marque_modele AS vehicule_marque, 
                v.photo_voiture AS vehicule_photo, 
@@ -55,15 +59,16 @@ const getTrajetsPasses = async () => {
                v.immatriculations AS vehicule_immatriculation
         FROM trajets t 
         LEFT JOIN vehicules v ON t.vehicule_id = v.id 
-        WHERE t.date_depart < CURDATE()
+        WHERE t.date_depart < CURRENT_DATE
         ORDER BY t.date_depart DESC
         LIMIT 20
     `);
-    return rows;
+    return result.rows;
 };
 
 const getTrajetById = async (id) => {
-    const [rows] = await pool.query(`
+    const pool = getPool();
+    const result = await pool.query(`
         SELECT t.*, 
                v.marque_modele AS vehicule_marque, 
                v.photo_voiture AS vehicule_photo, 
@@ -71,39 +76,46 @@ const getTrajetById = async (id) => {
                v.immatriculations AS vehicule_immatriculation
         FROM trajets t 
         LEFT JOIN vehicules v ON t.vehicule_id = v.id 
-        WHERE t.id = ?
+        WHERE t.id = $1
     `, [id]);
-    return rows[0];
+    return result.rows[0];
 };
 
 const createTrajet = async (depart, destination, date_depart, heure_depart, frais, places_disponibles, vehicule_id, statut = 'actif') => {
-    const [result] = await pool.query(
+    const pool = getPool();
+    const result = await pool.query(
         `INSERT INTO trajets (depart, destination, date_depart, heure_depart, frais, places_disponibles, vehicule_id, statut) 
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
         [depart, destination, date_depart, heure_depart, frais, places_disponibles, vehicule_id, statut]
     );
-    return result.insertId;
+    return result.rows[0].id;
 };
 
 const updateTrajet = async (id, depart, destination, date_depart, heure_depart, frais, places_disponibles, vehicule_id, statut) => {
-    const [result] = await pool.query(
+    const pool = getPool();
+    const result = await pool.query(
         `UPDATE trajets 
-         SET depart = ?, destination = ?, date_depart = ?, heure_depart = ?, 
-             frais = ?, places_disponibles = ?, vehicule_id = ?, statut = ? 
-         WHERE id = ?`,
+         SET depart = $1, destination = $2, date_depart = $3, heure_depart = $4, 
+             frais = $5, places_disponibles = $6, vehicule_id = $7, statut = $8 
+         WHERE id = $9`,
         [depart, destination, date_depart, heure_depart, frais, places_disponibles, vehicule_id, statut, id]
     );
-    return result.affectedRows;
+    return result.rowCount;
 };
 
 const deleteTrajet = async (id) => {
-    const [result] = await pool.query('DELETE FROM trajets WHERE id = ?', [id]);
-    return result.affectedRows;
+    const pool = getPool();
+    const result = await pool.query('DELETE FROM trajets WHERE id = $1', [id]);
+    return result.rowCount;
 };
 
 const updatePlacesDisponibles = async (id, nombre) => {
-    const [result] = await pool.query('UPDATE trajets SET places_disponibles = places_disponibles - ? WHERE id = ?', [nombre, id]);
-    return result.affectedRows;
+    const pool = getPool();
+    const result = await pool.query(
+        'UPDATE trajets SET places_disponibles = places_disponibles - $1 WHERE id = $2',
+        [nombre, id]
+    );
+    return result.rowCount;
 };
 
 module.exports = {

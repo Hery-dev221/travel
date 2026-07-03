@@ -1,4 +1,4 @@
-const pool = require('../config/db');
+const getPool = require('../config/db');
 
 const generateNumeroReservation = () => {
     const date = new Date();
@@ -10,16 +10,19 @@ const generateNumeroReservation = () => {
 };
 
 const createReservation = async (user_id, trajet_id, nombre_passagers, sieges, frais_total, operateur, nom_payeur, telephone_payeur, reference_paiement, preuve_paiement) => {
+    const pool = getPool();
     const numreo_reservation = generateNumeroReservation();
-    const [result] = await pool.query(
-        'INSERT INTO reservations (numreo_reservation, user_id, trajet_id, nombre_passagers, sieges, frais_total, operateur, nom_payeur, telephone_payeur, references_paiement, preuve_paiement, statut_reservation) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "en_attente")',
-        [numreo_reservation, user_id, trajet_id, nombre_passagers, sieges, frais_total, operateur, nom_payeur, telephone_payeur, reference_paiement, preuve_paiement]
+    const result = await pool.query(
+        `INSERT INTO reservations (numreo_reservation, user_id, trajet_id, nombre_passagers, sieges, frais_total, operateur, nom_payeur, telephone_payeur, references_paiement, preuve_paiement, statut_reservation) 
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING id`,
+        [numreo_reservation, user_id, trajet_id, nombre_passagers, sieges, frais_total, operateur, nom_payeur, telephone_payeur, reference_paiement, preuve_paiement, 'en_attente']
     );
-    return { id: result.insertId, numreo_reservation };
+    return { id: result.rows[0].id, numreo_reservation };
 };
 
 const getReservationsByUser = async (user_id) => {
-    const [rows] = await pool.query(
+    const pool = getPool();
+    const result = await pool.query(
         `SELECT r.*, 
                 t.depart, 
                 t.destination, 
@@ -32,15 +35,16 @@ const getReservationsByUser = async (user_id) => {
          FROM reservations r 
          JOIN trajets t ON r.trajet_id = t.id 
          LEFT JOIN vehicules v ON t.vehicule_id = v.id
-         WHERE r.user_id = ? 
+         WHERE r.user_id = $1 
          ORDER BY t.date_depart DESC`,
         [user_id]
     );
-    return rows;
+    return result.rows;
 };
 
 const getAllReservations = async () => {
-    const [rows] = await pool.query(
+    const pool = getPool();
+    const result = await pool.query(
         `SELECT r.*, 
                 u.nom as client_nom, 
                 u.email, 
@@ -57,11 +61,12 @@ const getAllReservations = async () => {
          LEFT JOIN vehicules v ON t.vehicule_id = v.id
          ORDER BY r.date_reservation DESC`
     );
-    return rows;
+    return result.rows;
 };
 
 const getReservationById = async (id) => {
-    const [rows] = await pool.query(
+    const pool = getPool();
+    const result = await pool.query(
         `SELECT r.*, 
                 u.nom as client_nom, 
                 u.email, 
@@ -77,24 +82,27 @@ const getReservationById = async (id) => {
          JOIN users u ON r.user_id = u.id 
          JOIN trajets t ON r.trajet_id = t.id 
          LEFT JOIN vehicules v ON t.vehicule_id = v.id
-         WHERE r.id = ?`,
+         WHERE r.id = $1`,
         [id]
     );
-    return rows[0];
+    return result.rows[0];
 };
 
 const updateReservationStatus = async (id, statut) => {
-    const [result] = await pool.query('UPDATE reservations SET statut_reservation = ? WHERE id = ?', [statut, id]);
-    return result.affectedRows;
+    const pool = getPool();
+    const result = await pool.query('UPDATE reservations SET statut_reservation = $1 WHERE id = $2', [statut, id]);
+    return result.rowCount;
 };
 
 const annulerReservation = async (id) => {
-    const [result] = await pool.query('UPDATE reservations SET statut_reservation = "annulee" WHERE id = ?', [id]);
-    return result.affectedRows;
+    const pool = getPool();
+    const result = await pool.query('UPDATE reservations SET statut_reservation = $1 WHERE id = $2', ['annulee', id]);
+    return result.rowCount;
 };
 
 const getReservationsEnAttente = async () => {
-    const [rows] = await pool.query(
+    const pool = getPool();
+    const result = await pool.query(
         `SELECT r.*, 
                 u.nom as client_nom, 
                 u.email,
@@ -109,20 +117,22 @@ const getReservationsEnAttente = async () => {
          JOIN users u ON r.user_id = u.id 
          JOIN trajets t ON r.trajet_id = t.id 
          LEFT JOIN vehicules v ON t.vehicule_id = v.id
-         WHERE r.statut_reservation = 'en_attente' AND t.date_depart > CURDATE() 
-         ORDER BY t.date_depart ASC`
+         WHERE r.statut_reservation = $1 AND t.date_depart > CURRENT_DATE
+         ORDER BY t.date_depart ASC`,
+        ['en_attente']
     );
-    return rows;
+    return result.rows;
 };
 
 const getOccupiedSeatsByTrajet = async (trajet_id) => {
-    const [rows] = await pool.query(
-        `SELECT sieges FROM reservations WHERE trajet_id = ? AND statut_reservation IN ('en_attente', 'confirmee')`,
+    const pool = getPool();
+    const result = await pool.query(
+        `SELECT sieges FROM reservations WHERE trajet_id = $1 AND statut_reservation IN ('en_attente', 'confirmee')`,
         [trajet_id]
     );
     
     let occupiedSeats = [];
-    rows.forEach(row => {
+    result.rows.forEach(row => {
         if (row.sieges) {
             const seats = row.sieges.split(',');
             seats.forEach(seat => {

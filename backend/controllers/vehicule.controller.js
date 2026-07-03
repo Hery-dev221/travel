@@ -43,7 +43,6 @@ const addVehicule = async (req, res) => {
         
         let photo_voiture = null;
         
-        // Gestion de l'upload de photo
         if (req.file) {
             photo_voiture = `/uploads/vehicules/${req.file.filename}`;
         }
@@ -62,15 +61,12 @@ const modifyVehicule = async (req, res) => {
         
         let photo_voiture = undefined;
         
-        // Récupérer l'ancien véhicule pour gérer la photo
         const oldVehicule = await getVehiculeById(req.params.id);
         if (!oldVehicule) {
             return res.status(404).json({ message: 'Véhicule non trouvé' });
         }
         
-        // Gestion de l'upload de nouvelle photo
         if (req.file) {
-            // Supprimer l'ancienne photo si elle existe
             if (oldVehicule.photo_voiture) {
                 try {
                     const oldPhotoPath = path.join(__dirname, '../../public', oldVehicule.photo_voiture);
@@ -84,7 +80,6 @@ const modifyVehicule = async (req, res) => {
             }
             photo_voiture = `/uploads/vehicules/${req.file.filename}`;
         } else {
-            // Conserver l'ancienne photo
             photo_voiture = oldVehicule.photo_voiture;
         }
         

@@ -1,32 +1,21 @@
-const mysql = require('mysql2/promise');
+const { Pool } = require('pg');
 require('dotenv').config();
 
 let pool;
 
 const getPool = () => {
     if (!pool) {
-        const config = {
-            host: process.env.DB_HOST || 'sql.freedb.tech',
-            user: process.env.DB_USER || 'u_ZUbF1u',
+        pool = new Pool({
+            host: process.env.DB_HOST || 'db.xxxxx.supabase.co',
+            user: process.env.DB_USER || 'postgres',
             password: process.env.DB_PASSWORD || '',
-            database: process.env.DB_NAME || 'freedb_fE5t6JPI',
-            waitForConnections: true,
-            connectionLimit: 10,
-            queueLimit: 0,
-            authSwitchHandler: (data, cb) => {
-                if (data.pluginName === 'sha256_password') {
-                    cb(null, Buffer.from(''));
-                } else {
-                    cb(null, data);
-                }
-            },
+            database: process.env.DB_NAME || 'postgres',
+            port: process.env.DB_PORT || 5432,
             ssl: {
                 rejectUnauthorized: false
             }
-        };
-
-        pool = mysql.createPool(config);
-        console.log('✅ Pool MySQL créé');
+        });
+        console.log('Pool PostgreSQL créé');
     }
     return pool;
 };
