@@ -1,24 +1,34 @@
 const mysql = require('mysql2/promise');
 require('dotenv').config();
 
-const pool = mysql.createPool({
-    host: process.env.DB_HOST || 'localhost',
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'travel_db',
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
-});
+let pool;
 
-(async () => {
-    try {
-        const connection = await pool.getConnection();
-        console.log('Connexion MySQL réussie');
-        connection.release();
-    } catch (error) {
-        console.error('Erreur connexion MySQL:', error.message);
+const getPool = () => {
+    if (!pool) {
+        const config = {
+            host: process.env.DB_HOST || 'sql.freedb.tech',
+            user: process.env.DB_USER || 'u_ZUbF1u',
+            password: process.env.DB_PASSWORD || '',
+            database: process.env.DB_NAME || 'freedb_fE5t6JPI',
+            waitForConnections: true,
+            connectionLimit: 10,
+            queueLimit: 0,
+            authSwitchHandler: (data, cb) => {
+                if (data.pluginName === 'sha256_password') {
+                    cb(null, Buffer.from(''));
+                } else {
+                    cb(null, data);
+                }
+            },
+            ssl: {
+                rejectUnauthorized: false
+            }
+        };
+
+        pool = mysql.createPool(config);
+        console.log('✅ Pool MySQL créé');
     }
-})();
+    return pool;
+};
 
-module.exports = pool;
+module.exports = getPool;
