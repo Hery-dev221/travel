@@ -9,10 +9,6 @@ yarn-error.log*
 .env.local
 .env.*.local
 
-# Dossiers uploads
-uploads/
-public/uploads/
-
 # Système
 .DS_Store
 Thumbs.db

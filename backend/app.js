@@ -4,6 +4,15 @@ const path = require('path');
 require('dotenv').config();
 
 const app = express();
+
+// Timeout plus long
+app.use((req, res, next) => {
+    res.setTimeout(30000, () => {
+        res.status(408).json({ message: 'Timeout' });
+    });
+    next();
+});
+
 app.use(cors({
     origin: '*',
     credentials: true
@@ -14,7 +23,6 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, '../frontend')));
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
-app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
 
 app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/vehicules', require('./routes/vehicule.routes'));
@@ -31,15 +39,11 @@ app.get('/api/test', (req, res) => {
     });
 });
 
-app.use((req, res) => {
-    res.status(404).json({ message: 'Route non trouvée' });
-});
-
 app.use((err, req, res, next) => {
     console.error('Erreur:', err.message);
     res.status(500).json({
         message: 'Erreur interne du serveur',
-        error: process.env.NODE_ENV === 'development' ? err.message : undefined
+        error: err.message
     });
 });
 
