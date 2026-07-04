@@ -29,10 +29,10 @@ const reserver = async (req, res) => {
         let preuve_paiement = null;
         if (req.file) {
             if (isVercel) {
-                console.log('Fichier reçu sur Vercel mais non sauvegardé (utilisation memoryStorage)');
+                console.log('Fichier reçu sur Vercel mais non sauvegardé');
                 preuve_paiement = null;
             } else {
-                preuve_paiement = req.file.filename;
+                preuve_paiement = `/uploads/preuves/${req.file.filename}`;
                 console.log('Fichier uploadé:', preuve_paiement);
             }
         }

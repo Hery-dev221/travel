@@ -9,7 +9,6 @@ let storage;
 if (isVercel) {
     storage = multer.memoryStorage();
 } else {
-    const uploadDir = path.join(__dirname, '../../uploads');
     const preuvesDir = path.join(__dirname, '../../uploads/preuves');
     const vehiculesDir = path.join(__dirname, '../../public/uploads/vehicules');
 
@@ -19,7 +18,6 @@ if (isVercel) {
         }
     };
 
-    ensureDirExists(uploadDir);
     ensureDirExists(preuvesDir);
     ensureDirExists(vehiculesDir);
 

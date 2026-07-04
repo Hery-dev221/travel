@@ -8,6 +8,8 @@ const {
 const path = require('path');
 const fs = require('fs');
 
+const isVercel = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
+
 const getVehicules = async (req, res) => {
     try {
         const vehicules = await getAllVehicules();
@@ -35,8 +37,6 @@ const addVehicule = async (req, res) => {
     try {
         const { marque_modele, immatriculations, places, chauffeur, etat, description } = req.body;
         
-        console.log('Données reçues pour ajout:', { marque_modele, immatriculations, places, chauffeur, etat, description });
-        
         if (!marque_modele || !immatriculations || !places) {
             return res.status(400).json({ message: 'Champs manquants: marque_modele, immatriculations, places' });
         }
@@ -44,7 +44,12 @@ const addVehicule = async (req, res) => {
         let photo_voiture = null;
         
         if (req.file) {
-            photo_voiture = `/uploads/vehicules/${req.file.filename}`;
+            if (isVercel) {
+                photo_voiture = null;
+                console.log('Photo non sauvegardée sur Vercel');
+            } else {
+                photo_voiture = `/uploads/vehicules/${req.file.filename}`;
+            }
         }
         
         const id = await createVehicule(marque_modele, immatriculations, places, chauffeur, etat, photo_voiture, description);
@@ -67,7 +72,7 @@ const modifyVehicule = async (req, res) => {
         }
         
         if (req.file) {
-            if (oldVehicule.photo_voiture) {
+            if (!isVercel && oldVehicule.photo_voiture) {
                 try {
                     const oldPhotoPath = path.join(__dirname, '../../public', oldVehicule.photo_voiture);
                     if (fs.existsSync(oldPhotoPath)) {
@@ -78,7 +83,13 @@ const modifyVehicule = async (req, res) => {
                     console.error('Erreur suppression ancienne photo:', err);
                 }
             }
-            photo_voiture = `/uploads/vehicules/${req.file.filename}`;
+            
+            if (isVercel) {
+                photo_voiture = null;
+                console.log('Photo non modifiée sur Vercel');
+            } else {
+                photo_voiture = `/uploads/vehicules/${req.file.filename}`;
+            }
         } else {
             photo_voiture = oldVehicule.photo_voiture;
         }

@@ -25,11 +25,11 @@
       "use": "@vercel/static"
     },
     {
-      "src": "uploads/preuves/**/*",
+      "src": "public/uploads/vehicules/**/*",
       "use": "@vercel/static"
     },
     {
-      "src": "public/uploads/vehicules/**/*",
+      "src": "uploads/preuves/**/*",
       "use": "@vercel/static"
     }
   ],
@@ -39,12 +39,12 @@
       "dest": "backend/server.js"
     },
     {
-      "src": "/uploads/preuves/(.*)",
-      "dest": "uploads/preuves/$1"
-    },
-    {
       "src": "/uploads/vehicules/(.*)",
       "dest": "public/uploads/vehicules/$1"
+    },
+    {
+      "src": "/uploads/preuves/(.*)",
+      "dest": "uploads/preuves/$1"
     },
     {
       "src": "/(.*)\\.(css|js|png|jpg|jpeg|gif|svg|ico|html|webp|avif|json)",
