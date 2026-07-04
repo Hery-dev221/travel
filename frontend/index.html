@@ -40,9 +40,28 @@
             padding: 0.5rem 1rem !important;
         }
         .nav-link:hover { color: #F9B81B !important; }
-        .navbar-toggler { border-color: rgba(255,255,255,0.5); }
+        .navbar-toggler {
+            border-color: rgba(255,255,255,0.5);
+            padding: 0.5rem 0.75rem;
+            font-size: 1.25rem;
+            line-height: 1;
+            background-color: transparent;
+            border-radius: 0.25rem;
+            transition: box-shadow 0.15s ease-in-out;
+        }
+        .navbar-toggler:focus {
+            box-shadow: 0 0 0 0.25rem rgba(249,184,27,0.25);
+        }
         .navbar-toggler-icon {
+            display: inline-block;
+            width: 1.5em;
+            height: 1.5em;
+            vertical-align: middle;
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,255,255,0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 100%;
+            filter: brightness(0) invert(1);
         }
 
         .hero {
@@ -317,6 +336,7 @@
             .trajet-label { min-width: 60px; }
             .trajet-info-line i { width: 18px; }
             .btn-col { justify-content: center; margin-top: 10px; }
+            .navbar-fixed { padding: 0.5rem 1rem; }
         }
         
         .loader { text-align: center; padding: 2rem; color: #1C2D4A; }
@@ -330,7 +350,6 @@
             background-size: 50% 50%;
         }
 
-        /* ===== NOUVEAUX STYLES ===== */
         .search-bar {
             background: white;
             border-radius: 50px;
@@ -433,7 +452,6 @@
             color: white;
         }
 
-        /* Animation */
         .fade-in {
             animation: fadeIn 0.5s ease forwards;
         }
@@ -490,7 +508,7 @@
 <nav class="navbar navbar-expand-lg navbar-fixed" id="mainNavbar">
     <div class="container">
         <a class="navbar-brand" href="/index.html">TRAVEL<span>.</span></a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
@@ -516,7 +534,6 @@
         <h2>Voyages dans les 2 prochains jours</h2>
     </div>
 
-    <!-- BARRE DE RECHERCHE -->
     <div class="search-bar mb-4" id="searchBar">
         <i class="fas fa-search text-muted" style="font-size: 0.9rem;"></i>
         <input type="text" id="searchInput" placeholder="Rechercher une destination..." aria-label="Rechercher un trajet">
@@ -524,12 +541,9 @@
         <button onclick="applySearch()">Rechercher</button>
     </div>
 
-    <!-- COMPTEUR DE TRAJETS -->
     <div class="trajet-count" id="trajetCount">Chargement des trajets...</div>
 
-    <!-- CONTENEUR DES TRAJETS -->
     <div id="trajets-container">
-        <!-- Skelettons -->
         <div class="skeleton-item fade-in">
             <div class="row align-items-center">
                 <div class="col-md-2"><div class="skeleton skeleton-img"></div></div>
@@ -866,12 +880,14 @@
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(applySearch, 300);
     });
+
     document.getElementById('searchInput').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
             applySearch();
         }
     });
+
     async function loadTrajetsAVenir() {
         const container = document.getElementById('trajets-container');
         const countDisplay = document.getElementById('trajetCount');
