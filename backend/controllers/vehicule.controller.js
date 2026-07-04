@@ -7,6 +7,7 @@ const {
 } = require('../models/vehicule.model');
 const path = require('path');
 const fs = require('fs');
+const supabase = require('../config/supabase');
 
 const isVercel = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
 
@@ -45,9 +46,28 @@ const addVehicule = async (req, res) => {
         
         if (req.file) {
             if (isVercel) {
-                photo_voiture = null;
-                console.log('Photo non sauvegardée sur Vercel');
+                // Sur Vercel : upload vers Supabase Storage
+                const file = req.file;
+                const fileName = `vehicules/${Date.now()}-${file.originalname}`;
+                
+                const { data, error } = await supabase.storage
+                    .from('travel')
+                    .upload(fileName, file.buffer, {
+                        contentType: file.mimetype
+                    });
+                
+                if (error) {
+                    console.error('Erreur upload Supabase:', error);
+                    return res.status(500).json({ message: 'Erreur lors de l\'upload de la photo' });
+                }
+                
+                const { data: urlData } = supabase.storage
+                    .from('travel')
+                    .getPublicUrl(fileName);
+                
+                photo_voiture = urlData.publicUrl;
             } else {
+                // En local : sauvegarde sur disque
                 photo_voiture = `/uploads/vehicules/${req.file.filename}`;
             }
         }
@@ -72,22 +92,48 @@ const modifyVehicule = async (req, res) => {
         }
         
         if (req.file) {
-            if (!isVercel && oldVehicule.photo_voiture) {
-                try {
-                    const oldPhotoPath = path.join(__dirname, '../../public', oldVehicule.photo_voiture);
-                    if (fs.existsSync(oldPhotoPath)) {
-                        fs.unlinkSync(oldPhotoPath);
-                        console.log('Ancienne photo supprimée:', oldPhotoPath);
-                    }
-                } catch (err) {
-                    console.error('Erreur suppression ancienne photo:', err);
-                }
-            }
-            
             if (isVercel) {
-                photo_voiture = null;
-                console.log('Photo non modifiée sur Vercel');
+                // Sur Vercel : upload vers Supabase Storage
+                const file = req.file;
+                const fileName = `vehicules/${Date.now()}-${file.originalname}`;
+                
+                const { data, error } = await supabase.storage
+                    .from('travel')
+                    .upload(fileName, file.buffer, {
+                        contentType: file.mimetype
+                    });
+                
+                if (error) {
+                    console.error('Erreur upload Supabase:', error);
+                    return res.status(500).json({ message: 'Erreur lors de l\'upload de la photo' });
+                }
+                
+                const { data: urlData } = supabase.storage
+                    .from('travel')
+                    .getPublicUrl(fileName);
+                
+                photo_voiture = urlData.publicUrl;
+                
+                // Supprimer l'ancienne photo si elle existe
+                if (oldVehicule.photo_voiture && oldVehicule.photo_voiture.includes('supabase.co')) {
+                    const oldPath = oldVehicule.photo_voiture.split('/travel/')[1];
+                    if (oldPath) {
+                        await supabase.storage.from('travel').remove([oldPath]);
+                    }
+                }
             } else {
+                // En local : suppression ancienne photo et sauvegarde
+                if (oldVehicule.photo_voiture) {
+                    try {
+                        const oldPhotoPath = path.join(__dirname, '../../public', oldVehicule.photo_voiture);
+                        if (fs.existsSync(oldPhotoPath)) {
+                            fs.unlinkSync(oldPhotoPath);
+                            console.log('Ancienne photo supprimée:', oldPhotoPath);
+                        }
+                    } catch (err) {
+                        console.error('Erreur suppression ancienne photo:', err);
+                    }
+                }
                 photo_voiture = `/uploads/vehicules/${req.file.filename}`;
             }
         } else {

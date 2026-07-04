@@ -2,13 +2,17 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
+// Sur Vercel, on utilise memoryStorage car on ne peut pas écrire sur le disque
+// Sur local, on utilise diskStorage pour sauvegarder les fichiers
 const isVercel = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
 
 let storage;
 
 if (isVercel) {
+    // Sur Vercel : stockage en mémoire pour envoyer vers Supabase
     storage = multer.memoryStorage();
 } else {
+    // En local : stockage sur disque
     const preuvesDir = path.join(__dirname, '../../uploads/preuves');
     const vehiculesDir = path.join(__dirname, '../../public/uploads/vehicules');
 

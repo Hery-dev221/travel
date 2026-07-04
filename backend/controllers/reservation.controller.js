@@ -9,6 +9,7 @@ const {
     getOccupiedSeatsByTrajet
 } = require('../models/reservation.model');
 const { getTrajetById, updatePlacesDisponibles } = require('../models/trajet.model');
+const supabase = require('../config/supabase');
 
 const isVercel = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
 
@@ -29,9 +30,28 @@ const reserver = async (req, res) => {
         let preuve_paiement = null;
         if (req.file) {
             if (isVercel) {
-                console.log('Fichier reçu sur Vercel mais non sauvegardé');
-                preuve_paiement = null;
+                // Sur Vercel : upload vers Supabase Storage
+                const file = req.file;
+                const fileName = `preuves/${Date.now()}-${file.originalname}`;
+                
+                const { data, error } = await supabase.storage
+                    .from('travel')
+                    .upload(fileName, file.buffer, {
+                        contentType: file.mimetype
+                    });
+                
+                if (error) {
+                    console.error('Erreur upload preuve:', error);
+                    return res.status(500).json({ message: 'Erreur lors de l\'upload de la preuve' });
+                }
+                
+                const { data: urlData } = supabase.storage
+                    .from('travel')
+                    .getPublicUrl(fileName);
+                
+                preuve_paiement = urlData.publicUrl;
             } else {
+                // En local : sauvegarde sur disque
                 preuve_paiement = `/uploads/preuves/${req.file.filename}`;
                 console.log('Fichier uploadé:', preuve_paiement);
             }
