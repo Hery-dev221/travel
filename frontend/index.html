@@ -21,7 +21,7 @@
             background-color: transparent;
             transition: background-color 0.4s ease;
             box-shadow: none;
-            padding: 1rem 2rem;
+            padding: 1rem 1.5rem;
         }
         .navbar-fixed.scrolled {
             background-color: #1C2D4A !important;
@@ -40,28 +40,25 @@
             padding: 0.5rem 1rem !important;
         }
         .nav-link:hover { color: #F9B81B !important; }
+
         .navbar-toggler {
-            border-color: rgba(255,255,255,0.5);
-            padding: 0.5rem 0.75rem;
-            font-size: 1.25rem;
-            line-height: 1;
-            background-color: transparent;
-            border-radius: 0.25rem;
-            transition: box-shadow 0.15s ease-in-out;
+            border: 2px solid rgba(255,255,255,0.8);
+            padding: 8px 12px;
+            border-radius: 6px;
+            background: transparent;
         }
         .navbar-toggler:focus {
-            box-shadow: 0 0 0 0.25rem rgba(249,184,27,0.25);
+            box-shadow: 0 0 0 3px rgba(249,184,27,0.4);
         }
         .navbar-toggler-icon {
             display: inline-block;
-            width: 1.5em;
-            height: 1.5em;
+            width: 28px;
+            height: 22px;
             vertical-align: middle;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,255,255,0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,255,255,0.9)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2.5' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
             background-repeat: no-repeat;
             background-position: center;
             background-size: 100%;
-            filter: brightness(0) invert(1);
         }
 
         .hero {
@@ -336,7 +333,6 @@
             .trajet-label { min-width: 60px; }
             .trajet-info-line i { width: 18px; }
             .btn-col { justify-content: center; margin-top: 10px; }
-            .navbar-fixed { padding: 0.5rem 1rem; }
         }
         
         .loader { text-align: center; padding: 2rem; color: #1C2D4A; }
@@ -776,7 +772,7 @@
                 <div class="empty-state fade-in">
                     <i class="fas fa-bus"></i>
                     <h5>Aucun trajet disponible</h5>
-                    <p class="text-muted">Aucun voyage ne correspond à votre recherche ou il n'y a pas de trajets disponibles.</p>
+                    <p class="text-muted">Aucun voyage ne correspond à votre recherche.</p>
                     <button class="btn btn-primary btn-sm" onclick="clearSearch()">Voir tous les trajets</button>
                 </div>
             `;
@@ -880,7 +876,6 @@
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(applySearch, 300);
     });
-
     document.getElementById('searchInput').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -915,7 +910,7 @@
                 <div class="empty-state fade-in">
                     <i class="fas fa-exclamation-circle" style="color: #EF476F;"></i>
                     <h5>Erreur de chargement</h5>
-                    <p class="text-muted">Impossible de charger les trajets. Veuillez réessayer plus tard.</p>
+                    <p class="text-muted">Impossible de charger les trajets.</p>
                     <button class="btn btn-primary btn-sm" onclick="loadTrajetsAVenir()">Réessayer</button>
                 </div>
             `;
