@@ -5,7 +5,6 @@ require('dotenv').config();
 
 const app = express();
 
-// Timeout plus long
 app.use((req, res, next) => {
     res.setTimeout(30000, () => {
         res.status(408).json({ message: 'Timeout' });
@@ -22,7 +21,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, '../frontend')));
+
+app.use('/uploads/preuves', express.static(path.join(__dirname, '../uploads/preuves')));
+app.use('/uploads/vehicules', express.static(path.join(__dirname, '../public/uploads/vehicules')));
+
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
 
 app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/vehicules', require('./routes/vehicule.routes'));
