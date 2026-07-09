@@ -13,22 +13,22 @@
         .seat-map {
             background: #f0f2f5;
             border-radius: 15px;
-            padding: 20px;
+            padding: 15px 10px;
             margin-bottom: 20px;
             overflow-x: auto;
         }
         .seat {
-            width: 60px;
-            height: 60px;
-            margin: 5px;
-            border-radius: 10px;
+            width: 40px;
+            height: 40px;
+            margin: 4px;
+            border-radius: 8px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 12px;
+            font-size: 11px;
         }
         .seat-available {
             background-color: #4A90E2;
@@ -58,38 +58,31 @@
             cursor: default;
         }
         .seat-driver i {
-            font-size: 20px;
+            font-size: 16px;
         }
         .seat-driver span {
             display: none;
         }
         .seat-legend {
             display: inline-block;
-            width: 30px;
-            height: 30px;
-            border-radius: 8px;
-            margin-right: 8px;
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            margin-right: 6px;
         }
         .vehicle-outline {
             border: 2px solid #1C2D4A;
-            border-radius: 20px;
-            padding: 15px;
+            border-radius: 16px;
+            padding: 12px 8px;
             background: white;
         }
         .seat-row {
-            margin-bottom: 8px;
+            margin-bottom: 5px;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-wrap: wrap;
-        }
-        .row-number {
-            font-weight: bold;
-            color: #1C2D4A;
-            margin-right: 15px;
-            display: inline-block;
-            width: 50px;
-            text-align: right;
+            gap: 2px;
         }
         .section-title {
             text-align: center;
@@ -141,19 +134,53 @@
         .btn-success:hover {
             background-color: #1e4a36;
         }
+        .legend-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px 20px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #ddd;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.75rem;
+            color: #555;
+        }
+        .legend-item .seat-legend {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            margin-right: 6px;
+        }
         @media (max-width: 768px) {
             .seat {
-                width: 45px;
-                height: 45px;
-                font-size: 10px;
+                width: 30px;
+                height: 30px;
+                font-size: 9px;
                 margin: 3px;
+                border-radius: 6px;
             }
-            .row-number {
-                width: 40px;
-                font-size: 11px;
+            .seat-map {
+                padding: 10px 5px;
+            }
+            .vehicle-outline {
+                padding: 8px 4px;
+            }
+            .seat-row {
+                gap: 1px;
+                margin-bottom: 3px;
             }
             .section-title h2 {
                 font-size: 1.5rem;
+            }
+            .seat-driver i {
+                font-size: 12px;
+            }
+            .legend-item {
+                font-size: 0.65rem;
             }
         }
     </style>
@@ -207,26 +234,16 @@
                                     <div id="seats-container"></div>
                                 </div>
                                 
-                                <div class="mt-3 pt-2 border-top">
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <span class="seat-legend seat-available"></span> Disponible
-                                        </div>
-                                        <div class="col-md-3">
-                                            <span class="seat-legend seat-selected"></span> Selectionne
-                                        </div>
-                                        <div class="col-md-3">
-                                            <span class="seat-legend seat-unavailable"></span> Indisponible
-                                        </div>
-                                        <div class="col-md-3">
-                                            <span class="seat-legend seat-driver"></span> Conducteur
-                                        </div>
-                                    </div>
+                                <div class="legend-container">
+                                    <span class="legend-item"><span class="seat-legend seat-available"></span> Disponible</span>
+                                    <span class="legend-item"><span class="seat-legend seat-selected"></span> Selectionne</span>
+                                    <span class="legend-item"><span class="seat-legend seat-unavailable"></span> Indisponible</span>
+                                    <span class="legend-item"><span class="seat-legend seat-driver"></span> Conducteur</span>
                                 </div>
                             </div>
                             
                             <input type="hidden" id="sieges" name="sieges">
-                            <div id="selected-seats-display" class="mt-2 text-muted small"></div>
+                            <div id="selected-seats-display" class="mt-2 text-muted small text-center"></div>
                         </div>
 
                         <div class="row">
@@ -278,7 +295,6 @@
         let html = '';
         
         html += `<div class="seat-row">`;
-        html += `<span class="row-number">Rangee 1</span>`;
         html += `<div class="seat seat-driver" data-seat="Cond" data-driver="true">`;
         html += `<i class="fas fa-steering-wheel"></i><span>Cond</span>`;
         html += `</div>`;
@@ -289,11 +305,9 @@
         html += `</div>`;
         
         let seatCounter = 3;
-        let rowNum = 2;
         
         while (seatCounter <= capaciteMax) {
             html += `<div class="seat-row">`;
-            html += `<span class="row-number">Rangee ${rowNum}</span>`;
             for (let j = 0; j < 4; j++) {
                 if (seatCounter <= capaciteMax) {
                     const seatNumber = `${seatCounter}`;
@@ -302,7 +316,6 @@
                 }
             }
             html += `</div>`;
-            rowNum++;
         }
         
         container.innerHTML = html;
