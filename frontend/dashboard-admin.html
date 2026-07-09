@@ -59,6 +59,24 @@
         .badge-en-attente { background-color: var(--yellow); color: var(--marine); }
         .badge-actif { background-color: var(--success); color: white; }
         .badge-rejete { background-color: var(--danger); color: white; }
+
+        .preuve-image-container {
+            text-align: center;
+            padding: 10px;
+        }
+        .preuve-image {
+            max-width: 100%;
+            max-height: 500px;
+            object-fit: contain;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .preuve-image:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
         @media (max-width: 768px) { .sidebar { width: 70px; } .sidebar-brand span, .sidebar-menu li span, .sidebar-footer span { display: none; } .sidebar-menu li { justify-content: center; margin: 5px 10px; } .sidebar-menu li i { margin: 0; } .main-content { margin-left: 70px; width: calc(100% - 70px); } .stat-card h3 { font-size: 1.2rem; } .card { padding: 1rem; } .table th, .table td { font-size: 0.65rem; padding: 6px 4px; } }
     </style>
 </head>
@@ -163,9 +181,6 @@
             </div>
             <div class="modal-body text-center" id="preuveModalBody">
                 <p>Chargement...</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
             </div>
         </div>
     </div>
@@ -302,9 +317,9 @@
                 imageUrl = `/uploads/${preuvePath}`;
             }
             modalBody.innerHTML = `
-                <p><strong>Fichier:</strong> ${preuvePath}</p>
-                <img src="${imageUrl}" class="img-fluid" style="max-height: 400px; cursor: pointer; border-radius: 8px;" onclick="window.open(this.src)" onerror="this.src='https://via.placeholder.com/400x300?text=Image+non+trouvee'">
-                <p class="mt-2 small text-muted">Cliquez sur l'image pour l'ouvrir en grand</p>
+                <div class="preuve-image-container">
+                    <img src="${imageUrl}" class="preuve-image" alt="Preuve de paiement" onclick="window.open(this.src)">
+                </div>
             `;
         }
         new bootstrap.Modal(document.getElementById('preuveModal')).show();
