@@ -30,7 +30,6 @@ const reserver = async (req, res) => {
         let preuve_paiement = null;
         if (req.file) {
             if (isVercel) {
-                // Sur Vercel : upload vers Supabase Storage
                 const file = req.file;
                 const fileName = `preuves/${Date.now()}-${file.originalname}`;
                 
@@ -51,7 +50,6 @@ const reserver = async (req, res) => {
                 
                 preuve_paiement = urlData.publicUrl;
             } else {
-                // En local : sauvegarde sur disque
                 preuve_paiement = `/uploads/preuves/${req.file.filename}`;
                 console.log('Fichier uploadé:', preuve_paiement);
             }

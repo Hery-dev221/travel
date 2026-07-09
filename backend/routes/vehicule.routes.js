@@ -9,8 +9,6 @@ const {
 } = require('../controllers/vehicule.controller');
 const authMiddleware = require('../middlewares/auth.middleware');
 const adminMiddleware = require('../middlewares/admin.middleware');
-
-// IMPORTANT : Importer uploadVehicule SEULEMENT quand nécessaire
 const { uploadVehicule } = require('../middlewares/upload.middleware');
 
 router.get('/', getVehicules);

@@ -12,8 +12,6 @@ const {
 } = require('../controllers/reservation.controller');
 const authMiddleware = require('../middlewares/auth.middleware');
 const adminMiddleware = require('../middlewares/admin.middleware');
-
-// IMPORTANT : Importer uploadPreuve SEULEMENT quand nécessaire
 const { uploadPreuve } = require('../middlewares/upload.middleware');
 
 router.post('/', authMiddleware, uploadPreuve.single('preuve_paiement'), reserver);

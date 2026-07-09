@@ -46,7 +46,6 @@ const addVehicule = async (req, res) => {
         
         if (req.file) {
             if (isVercel) {
-                // Sur Vercel : upload vers Supabase Storage
                 const file = req.file;
                 const fileName = `vehicules/${Date.now()}-${file.originalname}`;
                 
@@ -67,7 +66,6 @@ const addVehicule = async (req, res) => {
                 
                 photo_voiture = urlData.publicUrl;
             } else {
-                // En local : sauvegarde sur disque
                 photo_voiture = `/uploads/vehicules/${req.file.filename}`;
             }
         }
@@ -93,7 +91,6 @@ const modifyVehicule = async (req, res) => {
         
         if (req.file) {
             if (isVercel) {
-                // Sur Vercel : upload vers Supabase Storage
                 const file = req.file;
                 const fileName = `vehicules/${Date.now()}-${file.originalname}`;
                 
@@ -114,7 +111,6 @@ const modifyVehicule = async (req, res) => {
                 
                 photo_voiture = urlData.publicUrl;
                 
-                // Supprimer l'ancienne photo si elle existe
                 if (oldVehicule.photo_voiture && oldVehicule.photo_voiture.includes('supabase.co')) {
                     const oldPath = oldVehicule.photo_voiture.split('/travel/')[1];
                     if (oldPath) {
@@ -122,7 +118,6 @@ const modifyVehicule = async (req, res) => {
                     }
                 }
             } else {
-                // En local : suppression ancienne photo et sauvegarde
                 if (oldVehicule.photo_voiture) {
                     try {
                         const oldPhotoPath = path.join(__dirname, '../../public', oldVehicule.photo_voiture);

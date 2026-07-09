@@ -671,16 +671,7 @@
     loadDernieresReservations();
     loadProchainsTrajets();
 
-    fetch('/client-header.html')
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('header-container').innerHTML = data;
-            const userData = JSON.parse(localStorage.getItem('user') || '{}');
-            const nameSpan = document.getElementById('client-user-name');
-            if (nameSpan) nameSpan.innerText = userData.nom || 'Client';
-            document.getElementById('welcome-message').innerHTML = `Bonjour ${userData.nom || 'Client'} !`;
-        })
-        .catch(error => console.error('Erreur chargement header:', error));
+
 
     fetch('/client-footer.html')
         .then(response => response.text())

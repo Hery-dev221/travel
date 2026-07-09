@@ -9,303 +9,613 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="/js/config.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', sans-serif; background-color: #f5f7fa; }
-        :root { --marine: #1C2D4A; --yellow: #F9B81B; --blue-sky: #4A90E2; --white: #FFFFFF; --gray-bg: #F5F7FA; --success: #2D6A4F; --danger: #EF476F; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        .admin-container { display: flex; min-height: 100vh; }
-        .sidebar { width: 260px; background-color: var(--marine); color: white; display: flex; flex-direction: column; position: fixed; height: 100vh; left: 0; top: 0; transition: all 0.3s ease; z-index: 1000; }
-        .sidebar-brand { padding: 1.2rem; font-size: 1.3rem; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: center; }
-        .sidebar-brand i { color: var(--yellow); margin-right: 8px; }
-        .sidebar-brand span { color: white; }
-        .sidebar-menu { list-style: none; padding: 0; margin: 1rem 0; flex: 1; }
-        .sidebar-menu li { padding: 10px 15px; margin: 3px 10px; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 12px; color: rgba(255,255,255,0.8); font-size: 0.9rem; }
-        .sidebar-menu li i { width: 22px; font-size: 1rem; color: var(--yellow); }
-        .sidebar-menu li:hover { background-color: rgba(255,255,255,0.1); color: white; }
-        .sidebar-menu li.active { background-color: var(--yellow); color: var(--marine); }
-        .sidebar-menu li.active i { color: var(--marine); }
-        .sidebar-footer { padding: 0.8rem 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.3s; margin: 0 10px 10px 10px; border-radius: 10px; font-size: 0.9rem; }
-        .sidebar-footer:hover { background-color: rgba(255,255,255,0.1); }
-        .sidebar-footer i { color: var(--yellow); font-size: 1rem; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+        }
 
-        .main-content { margin-left: 260px; flex: 1; padding: 1rem; background-color: var(--gray-bg); min-height: 100vh; width: calc(100% - 260px); }
-        .section-title { text-align: center; margin-bottom: 1.5rem; }
-        .section-title h2 { color: var(--marine); font-size: 1.6rem; font-weight: bold; position: relative; display: inline-block; }
-        .section-title h2::after { content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 60px; height: 3px; background-color: var(--yellow); }
-        .card { background-color: white; border-radius: 12px; padding: 1rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border: none; margin-bottom: 1rem; }
+        :root {
+            --marine: #1C2D4A;
+            --yellow: #F9B81B;
+            --blue-sky: #4A90E2;
+            --white: #FFFFFF;
+            --gray-bg: #F5F7FA;
+            --success: #2D6A4F;
+            --danger: #EF476F;
+        }
 
-        .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        .table { margin-bottom: 0; font-size: 0.75rem; min-width: 900px; }
-        .table th { background-color: var(--marine); color: white; padding: 8px 6px; font-weight: 500; font-size: 0.7rem; white-space: nowrap; }
-        .table td { vertical-align: middle; padding: 6px; font-size: 0.7rem; }
-        .btn-sm { padding: 3px 8px; margin: 0 2px; font-size: 0.65rem; border-radius: 15px; }
-        .btn-success { background-color: var(--success); border: none; }
-        .btn-danger { background-color: var(--danger); border: none; }
-        .btn-primary { background-color: var(--blue-sky); border: none; }
-        
-        .filter-bar { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
-        .filter-bar select, .filter-bar input { padding: 5px 8px; border-radius: 8px; border: 1px solid #ddd; font-size: 0.7rem; }
-        .filter-bar button { padding: 5px 12px; font-size: 0.7rem; }
-        .preuve-link { color: var(--blue-sky); text-decoration: none; font-size: 0.65rem; cursor: pointer; }
-        .preuve-link:hover { text-decoration: underline; }
-        .badge { font-size: 0.6rem; padding: 3px 8px; }
-        .small-text { font-size: 0.6rem; }
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
 
-        .preuve-image-container { text-align: center; padding: 10px; }
-        .preuve-image { max-width: 100%; max-height: 450px; object-fit: contain; cursor: pointer; border-radius: 8px; transition: transform 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .preuve-image:hover { transform: scale(1.02); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        .image-error { background-color: #f8f9fa; padding: 40px; border-radius: 8px; color: #6c757d; text-align: center; }
-        .image-error i { font-size: 48px; margin-bottom: 10px; }
+        .sidebar {
+            width: 260px;
+            background-color: var(--marine);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar-brand {
+            padding: 1.2rem;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+        }
+
+        .sidebar-brand i {
+            color: var(--yellow);
+            margin-right: 8px;
+        }
+
+        .sidebar-brand span {
+            color: white;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0;
+            flex: 1;
+        }
+
+        .sidebar-menu li {
+            padding: 10px 15px;
+            margin: 3px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+        }
+
+        .sidebar-menu li i {
+            width: 22px;
+            font-size: 1rem;
+            color: var(--yellow);
+        }
+
+        .sidebar-menu li:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .sidebar-menu li.active {
+            background-color: var(--yellow);
+            color: var(--marine);
+        }
+
+        .sidebar-menu li.active i {
+            color: var(--marine);
+        }
+
+        .sidebar-footer {
+            padding: 0.8rem 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin: 0 10px 10px 10px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+        }
+
+        .sidebar-footer:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        .sidebar-footer i {
+            color: var(--yellow);
+            font-size: 1rem;
+        }
+
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 1rem;
+            background-color: var(--gray-bg);
+            min-height: 100vh;
+            width: calc(100% - 260px);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title h2 {
+            color: var(--marine);
+            font-size: 1.6rem;
+            font-weight: bold;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background-color: var(--yellow);
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border: none;
+            margin-bottom: 1rem;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table {
+            margin-bottom: 0;
+            font-size: 0.75rem;
+            min-width: 900px;
+        }
+
+        .table th {
+            background-color: var(--marine);
+            color: white;
+            padding: 8px 6px;
+            font-weight: 500;
+            font-size: 0.7rem;
+            white-space: nowrap;
+        }
+
+        .table td {
+            vertical-align: middle;
+            padding: 6px;
+            font-size: 0.7rem;
+        }
+
+        .btn-sm {
+            padding: 3px 8px;
+            margin: 0 2px;
+            font-size: 0.65rem;
+            border-radius: 15px;
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            border: none;
+        }
+
+        .btn-success:hover {
+            background-color: #1e4a36;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background-color: #c73e5e;
+        }
+
+        .btn-primary {
+            background-color: var(--blue-sky);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--marine);
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-bar select,
+        .filter-bar input {
+            padding: 5px 8px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 0.7rem;
+        }
+
+        .filter-bar button {
+            padding: 5px 12px;
+            font-size: 0.7rem;
+        }
+
+        .preuve-link {
+            color: var(--blue-sky);
+            text-decoration: none;
+            font-size: 0.65rem;
+            cursor: pointer;
+        }
+
+        .preuve-link:hover {
+            text-decoration: underline;
+        }
+
+        .badge {
+            font-size: 0.6rem;
+            padding: 3px 8px;
+        }
+
+        .small-text {
+            font-size: 0.6rem;
+        }
+
+        .preuve-image-container {
+            text-align: center;
+            padding: 10px;
+        }
+
+        .preuve-image {
+            max-width: 100%;
+            max-height: 450px;
+            object-fit: contain;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: transform 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .preuve-image:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .image-error {
+            background-color: #f8f9fa;
+            padding: 40px;
+            border-radius: 8px;
+            color: #6c757d;
+            text-align: center;
+        }
+
+        .image-error i {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
 
         @media (max-width: 768px) {
-            .sidebar { width: 65px; }
-            .sidebar-brand span, .sidebar-menu li span, .sidebar-footer span { display: none; }
-            .sidebar-menu li { justify-content: center; margin: 3px 5px; padding: 10px; }
-            .sidebar-menu li i { margin: 0; }
-            .main-content { margin-left: 65px; width: calc(100% - 65px); padding: 0.5rem; }
-            .section-title h2 { font-size: 1.2rem; }
-            .filter-bar { flex-direction: column; align-items: stretch; }
-            .filter-bar select, .filter-bar input, .filter-bar button { width: 100%; }
-            .card { padding: 0.8rem; }
-            .preuve-image { max-height: 250px; }
+            .sidebar {
+                width: 65px;
+            }
+
+            .sidebar-brand span,
+            .sidebar-menu li span,
+            .sidebar-footer span {
+                display: none;
+            }
+
+            .sidebar-menu li {
+                justify-content: center;
+                margin: 3px 5px;
+                padding: 10px;
+            }
+
+            .sidebar-menu li i {
+                margin: 0;
+            }
+
+            .main-content {
+                margin-left: 65px;
+                width: calc(100% - 65px);
+                padding: 0.5rem;
+            }
+
+            .section-title h2 {
+                font-size: 1.2rem;
+            }
+
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-bar select,
+            .filter-bar input,
+            .filter-bar button {
+                width: 100%;
+            }
+
+            .card {
+                padding: 0.8rem;
+            }
+
+            .preuve-image {
+                max-height: 250px;
+            }
         }
+
         @media (max-width: 480px) {
-            .sidebar { width: 55px; }
-            .main-content { margin-left: 55px; width: calc(100% - 55px); }
-            .preuve-image { max-height: 200px; }
+            .sidebar {
+                width: 55px;
+            }
+
+            .main-content {
+                margin-left: 55px;
+                width: calc(100% - 55px);
+            }
+
+            .preuve-image {
+                max-height: 200px;
+            }
         }
+
         @media (min-width: 769px) and (max-width: 1024px) {
-            .sidebar { width: 220px; }
-            .main-content { margin-left: 220px; width: calc(100% - 220px); }
+            .sidebar {
+                width: 220px;
+            }
+
+            .main-content {
+                margin-left: 220px;
+                width: calc(100% - 220px);
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="admin-container">
-    <div id="sidebar-container"></div>
-    <div class="main-content">
-        <div class="section-title"><h2>Gestion des Reservations</h2></div>
-        <div class="card">
-            <div class="filter-bar">
-                <select id="filterStatut" class="form-select form-select-sm" style="width: auto; min-width: 120px;">
-                    <option value="">Tous les statuts</option>
-                    <option value="en_attente">En attente</option>
-                    <option value="confirmee">Confirmee</option>
-                    <option value="annulee">Annulee</option>
-                    <option value="terminee">Terminee</option>
-                </select>
-                <input type="text" id="searchInput" class="form-control form-control-sm" placeholder="Client ou trajet..." style="min-width: 160px;">
-                <input type="date" id="filterDate" class="form-control form-control-sm" style="width: auto; min-width: 130px;">
-                <button class="btn btn-primary btn-sm" onclick="loadAllReservations()">Filtrer</button>
-                <button class="btn btn-secondary btn-sm" onclick="resetFilters()">Reinitialiser</button>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-bordered table-sm">
-                    <thead>
-                        <tr>
-                            <th>Numero</th>
-                            <th>Client</th>
-                            <th>Payeur</th>
-                            <th>Tel</th>
-                            <th>Trajet</th>
-                            <th>Date</th>
-                            <th>Pass.</th>
-                            <th>Frais</th>
-                            <th>Paiement</th>
-                            <th>Statut</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="reservations-table"></tbody>
-                </table>
+    <div class="admin-container">
+        <div id="sidebar-container"></div>
+        <div class="main-content">
+            <div class="section-title"><h2>Gestion des Reservations</h2></div>
+            <div class="card">
+                <div class="filter-bar">
+                    <select id="filterStatut" class="form-select form-select-sm" style="width: auto; min-width: 120px;">
+                        <option value="">Tous les statuts</option>
+                        <option value="en_attente">En attente</option>
+                        <option value="confirmee">Confirmee</option>
+                        <option value="annulee">Annulee</option>
+                        <option value="terminee">Terminee</option>
+                    </select>
+                    <input type="text" id="searchInput" class="form-control form-control-sm" placeholder="Client ou trajet..." style="min-width: 160px;">
+                    <input type="date" id="filterDate" class="form-control form-control-sm" style="width: auto; min-width: 130px;">
+                    <button class="btn btn-primary btn-sm" onclick="loadAllReservations()">Filtrer</button>
+                    <button class="btn btn-secondary btn-sm" onclick="resetFilters()">Reinitialiser</button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-sm">
+                        <thead>
+                            <tr>
+                                <th>Numero</th>
+                                <th>Client</th>
+                                <th>Payeur</th>
+                                <th>Tel</th>
+                                <th>Trajet</th>
+                                <th>Date</th>
+                                <th>Pass.</th>
+                                <th>Frais</th>
+                                <th>Paiement</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reservations-table"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="modal fade" id="preuveModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <div class="modal-header" style="background-color: var(--marine); color: white;">
-                <h5 class="modal-title"><i class="fas fa-receipt"></i> Preuve de paiement</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body text-center" id="preuveModalBody">
-                <div class="text-center">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Chargement...</span>
+    <div class="modal fade" id="preuveModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: var(--marine); color: white;">
+                    <h5 class="modal-title"><i class="fas fa-receipt"></i> Preuve de paiement</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center" id="preuveModalBody">
+                    <div class="text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Chargement...</span>
+                        </div>
+                        <p class="mt-2">Chargement de l'image...</p>
                     </div>
-                    <p class="mt-2">Chargement de l'image...</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Fermer</button>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Fermer</button>
+        </div>
+    </div>
+
+    <div class="modal fade" id="imageZoomModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content" style="background: rgba(0,0,0,0.9); border: none;">
+                <div class="text-end p-2">
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="text-center p-3">
+                    <img id="zoomImage" src="" alt="Preuve agrandie" style="max-width: 100%; max-height: 80vh; border-radius: 8px;">
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="modal fade" id="imageZoomModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
-        <div class="modal-content" style="background: rgba(0,0,0,0.9); border: none;">
-            <div class="text-end p-2">
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="text-center p-3">
-                <img id="zoomImage" src="" alt="Preuve agrandie" style="max-width: 100%; max-height: 80vh; border-radius: 8px;">
-            </div>
-        </div>
-    </div>
-</div>
+    <script>
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-<script>
-    const token = localStorage.getItem('token');
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
+        if (!token || user.role !== 'admin') window.location.href = '/connexion.html';
 
-    if (!token || user.role !== 'admin') window.location.href = '/connexion.html';
+        function voirPreuve(preuvePath) {
+            const modalBody = document.getElementById('preuveModalBody');
 
-    function voirPreuve(preuvePath) {
-        const modalBody = document.getElementById('preuveModalBody');
-        
-        if (!preuvePath || preuvePath === '-' || preuvePath === '' || preuvePath === 'null') {
+            if (!preuvePath || preuvePath === '-' || preuvePath === '' || preuvePath === 'null') {
+                modalBody.innerHTML = `
+                        <div class="text-center py-4">
+                            <i class="fas fa-file-image fa-4x text-muted mb-3"></i>
+                            <p class="text-muted">Aucune preuve de paiement fournie pour cette réservation.</p>
+                        </div>
+                    `;
+                new bootstrap.Modal(document.getElementById('preuveModal')).show();
+                return;
+            }
+            let imageUrl = preuvePath;
+
+            if (imageUrl.startsWith('preuves/')) {
+                imageUrl = '/uploads/' + imageUrl;
+            } else if (imageUrl.startsWith('uploads/preuves/')) {
+                imageUrl = '/' + imageUrl;
+            } else if (!imageUrl.startsWith('/uploads/preuves/') && !imageUrl.startsWith('http') && !imageUrl.startsWith(
+                    'data:')) {
+                imageUrl = '/uploads/preuves/' + imageUrl;
+            }
+
             modalBody.innerHTML = `
-                <div class="text-center py-4">
-                    <i class="fas fa-file-image fa-4x text-muted mb-3"></i>
-                    <p class="text-muted">Aucune preuve de paiement fournie pour cette réservation.</p>
-                </div>
-            `;
-            new bootstrap.Modal(document.getElementById('preuveModal')).show();
-            return;
-        }
-        let imageUrl = preuvePath;
-        
-        if (imageUrl.startsWith('preuves/')) {
-            imageUrl = '/uploads/' + imageUrl;
-        } else if (imageUrl.startsWith('uploads/preuves/')) {
-            imageUrl = '/' + imageUrl;
-        } else if (!imageUrl.startsWith('/uploads/preuves/') && !imageUrl.startsWith('http') && !imageUrl.startsWith('data:')) {
-            imageUrl = '/uploads/preuves/' + imageUrl;
-        }
-        
-        modalBody.innerHTML = `
-            <div class="preuve-image-container">
-                <img src="${imageUrl}" class="preuve-image" id="preuveImage" alt="Preuve de paiement" 
-                     onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'image-error\'><i class=\'fas fa-exclamation-triangle fa-3x\'></i><p class=\'mt-2\'>Impossible de charger l\'image.<br>Fichier: ${preuvePath}</p></div>';">
-            </div>
-        `;
-        
-        setTimeout(() => {
-            const img = document.getElementById('preuveImage');
-            if (img && img.tagName === 'IMG' && img.src && !img.src.includes('placeholder')) {
-                img.style.cursor = 'pointer';
-                img.onclick = function() {
-                    document.getElementById('zoomImage').src = this.src;
-                    new bootstrap.Modal(document.getElementById('imageZoomModal')).show();
-                };
-            }
-        }, 100);
-        
-        new bootstrap.Modal(document.getElementById('preuveModal')).show();
-    }
+                    <div class="preuve-image-container">
+                        <img src="${imageUrl}" class="preuve-image" id="preuveImage" alt="Preuve de paiement" 
+                             onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'image-error\'><i class=\'fas fa-exclamation-triangle fa-3x\'></i><p class=\'mt-2\'>Impossible de charger l\'image.<br>Fichier: ${preuvePath}</p></div>';">
+                    </div>
+                `;
 
-    async function loadAllReservations() {
-        try {
-            const response = await fetch(`${API_URL}/reservations/admin/all`, { headers: { 'Authorization': `Bearer ${token}` } });
-            let reservations = await response.json();
-            const statutFilter = document.getElementById('filterStatut').value;
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const dateFilter = document.getElementById('filterDate').value;
-            
-            if (statutFilter) reservations = reservations.filter(r => r.statut_reservation === statutFilter);
-            if (searchTerm) reservations = reservations.filter(r => (r.client_nom && r.client_nom.toLowerCase().includes(searchTerm)) || (r.depart && r.depart.toLowerCase().includes(searchTerm)));
-            if (dateFilter) reservations = reservations.filter(r => r.date_depart === dateFilter);
-            
-            const tbody = document.getElementById('reservations-table');
-            if (!reservations || reservations.length === 0) { 
-                tbody.innerHTML = '<tr><td colspan="11" class="text-center">Aucune reservation trouvee</td></tr>';
-                return; 
-            }
-            
-            tbody.innerHTML = reservations.map(res => {
-                let statutClass = '', statutText = res.statut_reservation || 'en_attente';
-                if (statutText === 'confirmee') statutClass = 'bg-success';
-                else if (statutText === 'en_attente') statutClass = 'bg-warning text-dark';
-                else if (statutText === 'annulee') statutClass = 'bg-danger';
-                else if (statutText === 'terminee') statutClass = 'bg-secondary';
-                else statutClass = 'bg-info';
-                
-                const operateur = res.operateur || '-';
-                const reference = res.reference_paiement || res.references_paiement || '-';
-                const preuve = res.preuve_paiement || '-';
-                const nomPayeur = res.nom_payeur || '-';
-                const telPayeur = res.telephone_payeur || '-';
-                
-                let paiementHtml = `<div class="small-text"><strong>${operateur}</strong><br>Ref: ${reference.substring(0,10)}${reference.length>10?'...':''}`;
-                if (preuve !== '-' && preuve !== '' && preuve !== 'null') {
-                    paiementHtml += `<br><a href="#" class="preuve-link" onclick="voirPreuve('${preuve}'); return false;"><i class="fas fa-image"></i> Voir preuve</a>`;
+            setTimeout(() => {
+                const img = document.getElementById('preuveImage');
+                if (img && img.tagName === 'IMG' && img.src && !img.src.includes('placeholder')) {
+                    img.style.cursor = 'pointer';
+                    img.onclick = function() {
+                        document.getElementById('zoomImage').src = this.src;
+                        new bootstrap.Modal(document.getElementById('imageZoomModal')).show();
+                    };
                 }
-                paiementHtml += `</div>`;
-                
-                const trajetText = `${res.depart || '?'} → ${res.destination || '?'}`;
-                const trajetShort = trajetText.length > 25 ? trajetText.substring(0,22)+'...' : trajetText;
-                
-                return `<tr>
-                    <td>${res.numero_reservation || res.numreo_reservation || 'N/A'}</td>
-                    <td>${(res.client_nom || '?').substring(0,15)}</td>
-                    <td>${nomPayeur.substring(0,15)}</td>
-                    <td>${telPayeur}</td>
-                    <td>${trajetShort}</td>
-                    <td>${res.date_depart ? new Date(res.date_depart).toLocaleDateString('fr-FR') : '?'}</td>
-                    <td>${res.nombre_passagers || '1'}</td>
-                    <td>${res.frais_total ? res.frais_total.toLocaleString() : '?'} Ar</td>
-                    <td>${paiementHtml}</td>
-                    <td><span class="badge ${statutClass}">${statutText}</span></td>
-                    <td>
-                        <button class="btn btn-success btn-sm" onclick="confirmerReservation(${res.id})" title="Confirmer"><i class="fas fa-check"></i></button>
-                        <button class="btn btn-danger btn-sm" onclick="annulerReservation(${res.id})" title="Annuler"><i class="fas fa-times"></i></button>
-                    </td>
-                </tr>`;
-            }).join('');
-        } catch(e) { console.error('Erreur chargement reservations:', e); }
-    }
+            }, 100);
 
-    function resetFilters() { 
-        document.getElementById('filterStatut').value = ''; 
-        document.getElementById('searchInput').value = ''; 
-        document.getElementById('filterDate').value = ''; 
-        loadAllReservations(); 
-    }
-    
-    async function confirmerReservation(id) { 
-        const response = await fetch(`${API_URL}/reservations/${id}/confirmer`, { method: 'PUT', headers: { 'Authorization': `Bearer ${token}` } }); 
-        if (response.ok) { alert('Reservation confirmee'); loadAllReservations(); } 
-        else { const error = await response.json(); alert('Erreur: ' + (error.message || 'Erreur lors de la confirmation')); } 
-    }
-    
-    async function annulerReservation(id) { 
-        const response = await fetch(`${API_URL}/reservations/${id}/annuler`, { method: 'PUT', headers: { 'Authorization': `Bearer ${token}` } }); 
-        if (response.ok) { alert('Reservation annulee'); loadAllReservations(); } 
-        else { const error = await response.json(); alert('Erreur: ' + (error.message || 'Erreur lors de l\'annulation')); } 
-    }
-    
-    function logout() { localStorage.clear(); window.location.href = '/connexion.html'; }
-    
-    loadAllReservations();
+            new bootstrap.Modal(document.getElementById('preuveModal')).show();
+        }
 
-    fetch('sidebar-admin.html')
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('sidebar-container').innerHTML = data;
-            document.getElementById('menu-reservations').classList.add('active');
-            window.logout = function() {
-                localStorage.clear();
-                window.location.href = '/connexion.html';
-            };
-        })
-        .catch(error => console.error('Erreur chargement sidebar:', error));
-</script>
+        async function loadAllReservations() {
+            try {
+                const response = await fetch(`${API_URL}/reservations/admin/all`, { headers: { 'Authorization': `Bearer ${token}` } });
+                let reservations = await response.json();
+                const statutFilter = document.getElementById('filterStatut').value;
+                const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+                const dateFilter = document.getElementById('filterDate').value;
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+                if (statutFilter) reservations = reservations.filter(r => r.statut_reservation === statutFilter);
+                if (searchTerm) reservations = reservations.filter(r => (r.client_nom && r.client_nom.toLowerCase()
+                        .includes(searchTerm)) || (r.depart && r.depart.toLowerCase().includes(searchTerm)));
+                if (dateFilter) reservations = reservations.filter(r => r.date_depart === dateFilter);
+
+                const tbody = document.getElementById('reservations-table');
+                if (!reservations || reservations.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="11" class="text-center">Aucune reservation trouvee</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = reservations.map(res => {
+                    let statutClass = '',
+                        statutText = res.statut_reservation || 'en_attente';
+                    if (statutText === 'confirmee') statutClass = 'bg-success';
+                    else if (statutText === 'en_attente') statutClass = 'bg-warning text-dark';
+                    else if (statutText === 'annulee') statutClass = 'bg-danger';
+                    else if (statutText === 'terminee') statutClass = 'bg-secondary';
+                    else statutClass = 'bg-info';
+
+                    const operateur = res.operateur || '-';
+                    const reference = res.reference_paiement || res.references_paiement || '-';
+                    const preuve = res.preuve_paiement || '-';
+                    const nomPayeur = res.nom_payeur || '-';
+                    const telPayeur = res.telephone_payeur || '-';
+
+                    let paiementHtml =
+                        `<div class="small-text"><strong>${operateur}</strong><br>Ref: ${reference.substring(0,10)}${reference.length>10?'...':''}`;
+                    if (preuve !== '-' && preuve !== '' && preuve !== 'null') {
+                        paiementHtml +=
+                            `<br><a href="#" class="preuve-link" onclick="voirPreuve('${preuve}'); return false;"><i class="fas fa-image"></i> Voir preuve</a>`;
+                    }
+                    paiementHtml += `</div>`;
+
+                    const trajetText = `${res.depart || '?'} → ${res.destination || '?'}`;
+                    const trajetShort = trajetText.length > 25 ? trajetText.substring(0, 22) + '...' : trajetText;
+
+                    return `<tr>
+                            <td>${res.numero_reservation || res.numreo_reservation || 'N/A'}</td>
+                            <td>${(res.client_nom || '?').substring(0,15)}</td>
+                            <td>${nomPayeur.substring(0,15)}</td>
+                            <td>${telPayeur}</td>
+                            <td>${trajetShort}</td>
+                            <td>${res.date_depart ? new Date(res.date_depart).toLocaleDateString('fr-FR') : '?'}</td>
+                            <td>${res.nombre_passagers || '1'}</td>
+                            <td>${res.frais_total ? res.frais_total.toLocaleString() : '?'} Ar</td>
+                            <td>${paiementHtml}</td>
+                            <td><span class="badge ${statutClass}">${statutText}</span></td>
+                            <td>
+                                <button class="btn btn-success btn-sm" onclick="confirmerReservation(${res.id})" title="Confirmer"><i class="fas fa-check"></i></button>
+                                <button class="btn btn-danger btn-sm" onclick="annulerReservation(${res.id})" title="Annuler"><i class="fas fa-times"></i></button>
+                            </td>
+                        </tr>`;
+                }).join('');
+            } catch (e) { console.error('Erreur chargement reservations:', e); }
+        }
+
+        function resetFilters() {
+            document.getElementById('filterStatut').value = '';
+            document.getElementById('searchInput').value = '';
+            document.getElementById('filterDate').value = '';
+            loadAllReservations();
+        }
+
+        async function confirmerReservation(id) {
+            const response = await fetch(`${API_URL}/reservations/${id}/confirmer`, { method: 'PUT', headers: { 'Authorization': `Bearer ${token}` } });
+            if (response.ok) { alert('Reservation confirmee');
+                loadAllReservations(); } else { const error = await response.json();
+                alert('Erreur: ' + (error.message || 'Erreur lors de la confirmation')); }
+        }
+
+        async function annulerReservation(id) {
+            const response = await fetch(`${API_URL}/reservations/${id}/annuler`, { method: 'PUT', headers: { 'Authorization': `Bearer ${token}` } });
+            if (response.ok) { alert('Reservation annulee');
+                loadAllReservations(); } else { const error = await response.json();
+                alert('Erreur: ' + (error.message || 'Erreur lors de l\'annulation')); }
+        }
+
+        function logout() { localStorage.clear();
+            window.location.href = '/connexion.html'; }
+
+        loadAllReservations();
+
+        fetch('sidebar-admin.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('sidebar-container').innerHTML = data;
+                document.getElementById('menu-reservations').classList.add('active');
+                window.logout = function() {
+                    localStorage.clear();
+                    window.location.href = '/connexion.html';
+                };
+            })
+            .catch(error => console.error('Erreur chargement sidebar:', error));
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
