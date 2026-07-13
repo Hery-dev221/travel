@@ -18,13 +18,11 @@
             margin-bottom: 2rem;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
-
         .welcome-card h1 {
             color: var(--marine);
             font-weight: bold;
             font-size: 1.8rem;
         }
-
         .quick-action {
             background: white;
             border-radius: 15px;
@@ -35,29 +33,24 @@
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-
         .quick-action:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
         }
-
         .quick-action i {
             font-size: 2.5rem;
             color: var(--blue-sky);
             margin-bottom: 1rem;
         }
-
         .quick-action h4 {
             color: var(--marine);
             font-weight: 600;
             margin-bottom: 0.5rem;
         }
-
         .quick-action p {
             color: #6c757d;
             font-size: 0.85rem;
         }
-
         .card {
             background-color: white;
             border-radius: 15px;
@@ -66,7 +59,6 @@
             border: none;
             margin-bottom: 1.5rem;
         }
-
         .card-header {
             background-color: var(--marine);
             color: white;
@@ -74,12 +66,10 @@
             padding: 1rem;
             margin: -1.2rem -1.2rem 1rem -1.2rem;
         }
-
         .card-header h4 {
             margin: 0;
             font-size: 1.1rem;
         }
-
         .voyage-item {
             background-color: white;
             border-radius: 10px;
@@ -87,20 +77,17 @@
             margin-bottom: 1rem;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
-
         .voyage-item h5 {
             color: var(--marine);
             font-weight: bold;
             font-size: 1rem;
             margin-bottom: 0.3rem;
         }
-
         .voyage-price {
             color: var(--blue-sky);
             font-weight: bold;
             font-size: 1rem;
         }
-
         .btn-primary-custom {
             background-color: var(--blue-sky);
             color: white;
@@ -110,12 +97,10 @@
             border: none;
             transition: 0.3s;
         }
-
         .btn-primary-custom:hover {
             background-color: var(--marine);
             transform: scale(1.02);
         }
-
         .btn-outline-custom {
             background: transparent;
             border: 2px solid var(--blue-sky);
@@ -126,12 +111,10 @@
             transition: 0.3s;
             font-size: 0.8rem;
         }
-
         .btn-outline-custom:hover {
             background-color: var(--blue-sky);
             color: white;
         }
-
         .statut-confirme {
             background-color: var(--success);
             color: white;
@@ -141,7 +124,6 @@
             font-weight: 600;
             display: inline-block;
         }
-
         .statut-attente {
             background-color: var(--yellow);
             color: var(--marine);
@@ -151,7 +133,6 @@
             font-weight: 600;
             display: inline-block;
         }
-
         .statut-annule {
             background-color: var(--danger);
             color: white;
@@ -161,7 +142,6 @@
             font-weight: 600;
             display: inline-block;
         }
-
         .statut-termine {
             background-color: var(--marine);
             color: white;
@@ -171,7 +151,6 @@
             font-weight: 600;
             display: inline-block;
         }
-
         .vehicule-info {
             font-size: 0.75rem;
             color: var(--text-gray);
@@ -181,7 +160,6 @@
             color: var(--blue-sky);
             margin-right: 3px;
         }
-
         .rating {
             display: inline-flex;
             flex-direction: row-reverse;
@@ -201,7 +179,6 @@
         .rating label:hover ~ label {
             color: var(--yellow);
         }
-
         .badge-en-attente {
             background-color: var(--yellow);
             color: var(--marine);
@@ -245,7 +222,6 @@
             padding: 1rem;
             margin-bottom: 1.5rem;
         }
-
         .vehicle-thumb {
             width: 100%;
             max-width: 100px;
@@ -254,28 +230,23 @@
             border-radius: 8px;
             border: 1px solid #e0e0e0;
         }
-
         .trajet-info-line {
             margin-bottom: 4px;
             font-size: 0.85rem;
         }
-
         .trajet-info-line i {
             width: 20px;
             color: var(--blue-sky);
         }
-
         .trajet-label {
             color: var(--text-gray);
             font-weight: 500;
         }
-
         .photo-col {
             display: flex;
             align-items: center;
             justify-content: center;
         }
-
         @media (max-width: 768px) {
             .welcome-card h1 {
                 font-size: 1.3rem;
@@ -671,7 +642,16 @@
     loadDernieresReservations();
     loadProchainsTrajets();
 
-
+    fetch('/client-header.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('header-container').innerHTML = data;
+            const userData = JSON.parse(localStorage.getItem('user') || '{}');
+            const nameSpan = document.getElementById('client-user-name');
+            if (nameSpan) nameSpan.innerText = userData.nom || 'Client';
+            document.getElementById('welcome-message').innerHTML = `Bonjour ${userData.nom || 'Client'} !`;
+        })
+        .catch(error => console.error('Erreur chargement header:', error));
 
     fetch('/client-footer.html')
         .then(response => response.text())
